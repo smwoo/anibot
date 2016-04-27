@@ -17,7 +17,7 @@ var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
 // };
 var botname = 'anibot';
 var botkey = '90b0e4fd-177a-4610-ab20-efa3684be264';
-var botUrl = "anibot.herokuapp.com/incoming";
+var botUrl = "https://anibot.herokuapp.com/incoming";
 
 var botsettings = {baseUrl: '/incoming',
                    username: botname,
@@ -25,13 +25,13 @@ var botsettings = {baseUrl: '/incoming',
 };
 
 var bothooksettings = {webhook: botUrl,
-                       features: ''};
+                       features: {}};
 
 // set bot's webhook to the heroku app
 request.post({
   url: 'https://api.kik.com/v1/config',
   auth: {user : botname, pass : botkey},
-  body: JSON.stringify(bothooksettings)
+  json: bothooksettings
 },
 function (error, response, body) {
   //Check for error
