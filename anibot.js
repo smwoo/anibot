@@ -10,9 +10,9 @@ var ani_client_id = "mwoo-8zevs";
 var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
 
 // kikbot auth
-var botsettings = {username: "anibot", apikey: "efa3684be264"}
+var botsettings = {username: "anibot", apikey: "90b0e4fd-177a-4610-ab20-efa3684be264"}
 var botname = "anibot";
-var botkey = "efa3684be264";
+var botkey = "90b0e4fd-177a-4610-ab20-efa3684be264";
 var botURL = "anibot.herokuapp.com/incoming"
 
 // set bot's webhook to the heroku app
