@@ -3,16 +3,39 @@
 let util = require('util');
 let http = require('http');
 let Bot  = require('@kikinteractive/kik');
+let request = require('request');
 
+// anilist oauth
 var ani_client_id = "mwoo-8zevs";
 var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
 
+// kikbot auth
+var botname = "anibot";
+var botkey = "efa3684be264";
+var botURL = "anibot.herokuapp.com/incoming"
+
+// set bot's webhook to the heroku app
+request.post('https://api.kik.com/v1/config', function (error, response, body) {
+    //Check for error
+    if(error){
+        return console.log('Error:', error);
+    }
+
+    //Check for right status code
+    if(response.statusCode !== 200){
+        return console.log('Invalid Status Code Returned:', response.statusCode);
+    }
+
+    //All is good. Print the body
+    console.log(body); // Show the HTML for the Modulus homepage.
+
+});
+
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot({
-    username: 'anibot',
-    apiKey: '90b0e4fd-177a-4610-ab20-efa3684be264',
+    username: botname,
+    apiKey: botkey,
     baseUrl: '/incoming'
-    // baseUrl: 'http://localhost:'+ process.env.PORT || 8080
 });
 
 bot.updateBotConfiguration();
