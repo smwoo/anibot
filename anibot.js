@@ -31,7 +31,7 @@ var bothooksettings = {webhook: botUrl,
 request.post({
   url: 'https://api.kik.com/v1/config',
   auth: {user : botname, pass : botkey},
-  json: bothooksettings
+  body: JSON.stringify(bothooksettings)
 },
 function (error, response, body) {
   //Check for error
