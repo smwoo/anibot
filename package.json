@@ -1,0 +1,23 @@
+{
+  "name": "anibot",
+  "version": "1.0.0",
+  "description": "A kik bot that updates you on anime using the anilist api",
+  "main": "anibot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smwoo/anibot.git"
+  },
+  "keywords": [
+    "anime"
+  ],
+  "author": "michael woo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smwoo/anibot/issues"
+  },
+  "homepage": "https://github.com/smwoo/anibot#readme"
+}

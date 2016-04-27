@@ -8,7 +8,8 @@ let Bot  = require('@kikinteractive/kik');
 let bot = new Bot({
     username: 'anibot',
     apiKey: '90b0e4fd-177a-4610-ab20-efa3684be264',
-    baseUrl: 'https://anibot.heroku.com'
+    baseUrl: 'salty-reaches-46421.herokuapp.com'
+    // baseUrl: 'http://localhost:'+ process.env.PORT || 8080
 });
 
 bot.updateBotConfiguration();
