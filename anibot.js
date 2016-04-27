@@ -3,7 +3,7 @@
 let util = require('util');
 let http = require('http');
 let Bot  = require('@kikinteractive/kik');
-let request = require('request');
+var request = require('request');
 
 // anilist oauth
 var ani_client_id = "mwoo-8zevs";
