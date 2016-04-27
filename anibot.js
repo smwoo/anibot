@@ -19,7 +19,7 @@ var botname = 'anibot';
 var botkey = '90b0e4fd-177a-4610-ab20-efa3684be264';
 var botURL = "anibot.herokuapp.com/incoming";
 
-var botsettings = {};
+var botsettings = {baseUrl: '/incoming'};
 botsettings["username"] = botname;
 botsettings["apiKey"] = botkey;
 
