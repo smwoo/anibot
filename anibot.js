@@ -23,6 +23,7 @@ var botname = "anibot";
 var botkey = "90b0e4fd-177a-4610-ab20-efa3684be264";
 var botURL = "anibot.herokuapp.com/incoming";
 
+console.log(botsettings);
 // set bot's webhook to the heroku app
 // request.post('https://api.kik.com/v1/config', function (error, response, body) {
 //     //Check for error
