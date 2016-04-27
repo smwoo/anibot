@@ -10,6 +10,7 @@ var ani_client_id = "mwoo-8zevs";
 var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
 
 // kikbot auth
+botsettings = {name: "anibot", botkey: "efa3684be264"}
 var botname = "anibot";
 var botkey = "efa3684be264";
 var botURL = "anibot.herokuapp.com/incoming"
@@ -32,11 +33,7 @@ request.post('https://api.kik.com/v1/config', function (error, response, body) {
 });
 
 // Configure the bot API endpoint, details for your bot
-let bot = new Bot({
-    username: botname,
-    apiKey: botkey,
-    baseUrl: '/incoming'
-});
+let bot = new Bot(botsettings);
 
 bot.updateBotConfiguration();
 
