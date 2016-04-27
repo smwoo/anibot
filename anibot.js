@@ -29,8 +29,8 @@ var bothooksettings = {webhook: botUrl,
 
 // set bot's webhook to the heroku app
 request.post({
-  url: 'https://api.kik.com/v1/config',
-  auth: botname+':'+botkey,
+  url: 'https://'+botname+':'+botkey+'@api.kik.com/v1/config',
+  // auth: botname+':'+botkey,
   json: bothooksettings
 },
 function (error, response, body) {
