@@ -8,20 +8,22 @@ var request = require('request');
 // anilist oauth
 var ani_client_id = "mwoo-8zevs";
 var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
+var ani_endpoint = "https://anilist.co/api/"
+va ani_refresh = {
+  grant_type: "client_credentials",
+  client_id: ani_client_id,
+  client_secret: ani_client_secret
+};
 
 // kikbot auth
-// var botsettings = {
-//     username: 'anibot',
-//     apiKey: '90b0e4fd-177a-4610-ab20-efa3684be264',
-//     baseUrl: '/incoming'
-// };
 var botname = 'anibot';
 var botkey = '90b0e4fd-177a-4610-ab20-efa3684be264';
 var botUrl = "https://anibot.herokuapp.com/incoming";
 
-var botsettings = {baseUrl: '/incoming',
-                   username: botname,
-                   apiKey: botkey
+var botsettings = {
+  baseUrl: '/incoming',
+  username: botname,
+  apiKey: botkey
 };
 
 var bothooksettings = {webhook: botUrl,
@@ -32,23 +34,44 @@ request.post({
   url: 'https://api.kik.com/v1/config',
   auth: {user : botname, pass : botkey},
   json: bothooksettings
-},
-function (error, response, body) {
-  //Check for error
-  if(error){
-      return console.log('Error:', error);
-  }
+  },
+  function (error, response, body) {
+    //Check for error
+    if(error){
+        return console.log('Error:', error);
+    }
 
-  //Check for right status code
-  if(response.statusCode !== 200){
-      return console.log('Invalid Status Code Returned:', response.statusCode);
-  }
+    //Check for right status code
+    if(response.statusCode !== 200){
+        return console.log('Invalid Status Code Returned:', response.statusCode);
+    }
 
-  //All is good. Print the body
-  console.log('succes\n');
-  console.log(body); // Show the HTML for the Modulus homepage.
-}
+    //All is good. Print the body
+    console.log('success');
+    console.log(body); // Show the HTML for the Modulus homepage.
+  }
 );
+
+request.post({
+  url: ani_endpoint+'auth/access_token',
+  json: anilist_settings
+  },
+  function (error, response, body) {
+    //Check for error
+    if(error){
+        return console.log('Error:', error);
+    }
+
+    //Check for right status code
+    if(response.statusCode !== 200){
+        return console.log('Invalid Status Code Returned:', response.statusCode);
+    }
+
+    //All is good. Print the body
+    console.log('success');
+    console.log(body); // Show the HTML for the Modulus homepage.
+  }
+)
 
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
