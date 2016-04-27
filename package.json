@@ -12,7 +12,8 @@
     "url": "https://github.com/smwoo/anibot.git"
   },
   "dependencies" : {
-    "@kikinteractive/kik" : "2.0.2"
+    "@kikinteractive/kik" : "2.0.2",
+    "request" : "2.72.0"
   },
   "keywords": [
     "anime"

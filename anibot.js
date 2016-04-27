@@ -4,6 +4,9 @@ let util = require('util');
 let http = require('http');
 let Bot  = require('@kikinteractive/kik');
 
+var ani_client_id = "mwoo-8zevs";
+var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
+
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot({
     username: 'anibot',
