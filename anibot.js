@@ -41,10 +41,11 @@ function (error, response, body) {
 
   //Check for right status code
   if(response.statusCode !== 200){
-      console.log('Invalid Status Code Returned:', response.statusCode);
+      return console.log('Invalid Status Code Returned:', response.statusCode);
   }
 
   //All is good. Print the body
+  console.log('succes\n');
   console.log(body); // Show the HTML for the Modulus homepage.
 }
 );
