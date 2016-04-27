@@ -21,7 +21,7 @@ var botURL = "anibot.herokuapp.com/incoming";
 
 var botsettings = {};
 botsettings["username"] = botname;
-botsettings["apikey"] = botkey;
+botsettings["apiKey"] = botkey;
 
 
 
