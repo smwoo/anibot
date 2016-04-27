@@ -10,11 +10,15 @@ var ani_client_id = "mwoo-8zevs";
 var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
 
 // kikbot auth
-var botsettings = {
-    username: 'anibot',
-    apiKey: '90b0e4fd-177a-4610-ab20-efa3684be264',
-    baseUrl: '/incoming'
-};
+// var botsettings = {
+//     username: 'anibot',
+//     apiKey: '90b0e4fd-177a-4610-ab20-efa3684be264',
+//     baseUrl: '/incoming'
+// };
+var botsettings = {};
+botsettings["username"] = botname;
+botsettings["apikey"] = botkey;
+
 var botname = "anibot";
 var botkey = "90b0e4fd-177a-4610-ab20-efa3684be264";
 var botURL = "anibot.herokuapp.com/incoming";
