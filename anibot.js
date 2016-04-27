@@ -19,37 +19,41 @@ var botname = 'anibot';
 var botkey = '90b0e4fd-177a-4610-ab20-efa3684be264';
 var botUrl = "anibot.herokuapp.com/incoming";
 
-var botsettings = {baseUrl: '/incoming'};
-botsettings["username"] = botname;
-botsettings["apiKey"] = botkey;
+var botsettings = {baseUrl: '/incoming',
+                   username: botname,
+                   apiKey: botkey
+};
+// botsettings["username"] = botname;
+// botsettings["apiKey"] = botkey;
 
-var bothooksettings = {features: ''};
-bothooksettings["webhook"] = botUrl;
+// var bothooksettings = {features: ''};
+// bothooksettings["webhook"] = botUrl;
+// var auth =
 
-// set bot's webhook to the heroku app
-request.post('https://api.kik.com/v1/config',
-  auth=(botname, botkey),
-  headers={
-    'Content-Type' : 'applications/json'
-  },
-  data=json.dumps(
-    bothooksettings
-  ),
-  function (error, response, body) {
-    //Check for error
-    if(error){
-        return console.log('Error:', error);
-    }
+// // set bot's webhook to the heroku app
+// request.post('https://api.kik.com/v1/config',
+//   auth=(botname, botkey),
+//   headers={
+//     'Content-Type' : 'applications/json'
+//   },
+//   data=json.dumps(
+//     bothooksettings
+//   ),
+//   function (error, response, body) {
+//     //Check for error
+//     if(error){
+//         return console.log('Error:', error);
+//     }
 
-    //Check for right status code
-    if(response.statusCode !== 200){
-        return console.log('Invalid Status Code Returned:', response.statusCode);
-    }
+//     //Check for right status code
+//     if(response.statusCode !== 200){
+//         return console.log('Invalid Status Code Returned:', response.statusCode);
+//     }
 
-    //All is good. Print the body
-    console.log(body); // Show the HTML for the Modulus homepage.
-  }
-);
+//     //All is good. Print the body
+//     console.log(body); // Show the HTML for the Modulus homepage.
+//   }
+// );
 
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
