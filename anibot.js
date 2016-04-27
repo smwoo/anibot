@@ -41,7 +41,7 @@ function (error, response, body) {
 
   //Check for right status code
   if(response.statusCode !== 200){
-      return console.log('Invalid Status Code Returned:', response.statusCode);
+      console.log('Invalid Status Code Returned:', response.statusCode);
   }
 
   //All is good. Print the body
