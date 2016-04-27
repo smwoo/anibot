@@ -24,21 +24,21 @@ var botkey = "90b0e4fd-177a-4610-ab20-efa3684be264";
 var botURL = "anibot.herokuapp.com/incoming";
 
 // set bot's webhook to the heroku app
-request.post('https://api.kik.com/v1/config', function (error, response, body) {
-    //Check for error
-    if(error){
-        return console.log('Error:', error);
-    }
+// request.post('https://api.kik.com/v1/config', function (error, response, body) {
+//     //Check for error
+//     if(error){
+//         return console.log('Error:', error);
+//     }
 
-    //Check for right status code
-    if(response.statusCode !== 200){
-        return console.log('Invalid Status Code Returned:', response.statusCode);
-    }
+//     //Check for right status code
+//     if(response.statusCode !== 200){
+//         return console.log('Invalid Status Code Returned:', response.statusCode);
+//     }
 
-    //All is good. Print the body
-    console.log(body); // Show the HTML for the Modulus homepage.
+//     //All is good. Print the body
+//     console.log(body); // Show the HTML for the Modulus homepage.
 
-});
+// });
 
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
