@@ -9,7 +9,7 @@ var request = require('request');
 var ani_client_id = "mwoo-8zevs";
 var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
 var ani_endpoint = "https://anilist.co/api/"
-va ani_refresh = {
+var ani_refresh = {
   grant_type: "client_credentials",
   client_id: ani_client_id,
   client_secret: ani_client_secret
@@ -54,7 +54,7 @@ request.post({
 
 request.post({
   url: ani_endpoint+'auth/access_token',
-  json: anilist_settings
+  json: ani_refresh
   },
   function (error, response, body) {
     //Check for error
