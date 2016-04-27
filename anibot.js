@@ -10,7 +10,11 @@ var ani_client_id = "mwoo-8zevs";
 var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
 
 // kikbot auth
-var botsettings = {username: 'anibot', apikey: '90b0e4fd-177a-4610-ab20-efa3684be264'};
+var botsettings = {
+    username: 'anibot',
+    apiKey: '90b0e4fd-177a-4610-ab20-efa3684be264',
+    baseUrl: '/incoming'
+};
 var botname = "anibot";
 var botkey = "90b0e4fd-177a-4610-ab20-efa3684be264";
 var botURL = "anibot.herokuapp.com/incoming";
@@ -33,11 +37,7 @@ request.post('https://api.kik.com/v1/config', function (error, response, body) {
 });
 
 // Configure the bot API endpoint, details for your bot
-let bot = new Bot({
-    username: 'anibot',
-    apiKey: '90b0e4fd-177a-4610-ab20-efa3684be264',
-    baseUrl: '/incoming'
-});
+let bot = new Bot(botsettings);
 
 bot.updateBotConfiguration();
 
