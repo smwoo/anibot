@@ -36,7 +36,6 @@ function getNewAniToken(){
       //All is good. Print the body
       // var jbody = JSON.parse(body);
       console.log(body);
-      // console.log(jbody);
       // ani_token = jbody['access_token'];
     }
   )
@@ -60,21 +59,21 @@ function searchAnime(name, attempt){
   })
 }
 
-// kikbot auth
+// // kikbot auth
 var botname = 'anibot';
 var botkey = '90b0e4fd-177a-4610-ab20-efa3684be264';
 var botUrl = "https://anibot.herokuapp.com/incoming";
 
 var botsettings = {
-  baseUrl: '/incoming',
   username: botname,
-  apiKey: botkey
+  apiKey: botkey,
+  baseUrl: '/incoming'
 };
 
 var bothooksettings = {webhook: botUrl,
                        features: {}};
 
-// set bot's webhook to the heroku app
+// // set bot's webhook to the heroku app
 request.post({
   url: 'https://api.kik.com/v1/config',
   auth: {user : botname, pass : botkey},
