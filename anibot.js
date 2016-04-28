@@ -44,15 +44,16 @@ function searchAnime(name, attempt){
   request(ani_endpoint+'anime/search/'+name+'?access_token='+token, function(error, response, body){
     if(error){
       console.log('Error:', error);
-      if(response.statusCode == 401){
-
+      if(response.statusCode == 401 && attempt == 0){
+      	getNewAniToken();
+      	searchAnime(name, attempt++);
       }
+      return 1;
     }
 
-    if(response.statusCode !== 200){
-      if(response.statusCode == 401){
+    if(response.statusCode == 200){
+    	var jbody = JSON.parse(body);
 
-      }
     }
   })
 }
@@ -90,9 +91,11 @@ request.post({
 
     //All is good. Print the body
     console.log('success');
-    console.log(body); // Show the HTML for the Modulus homepage.
+    // console.log(body); // Show the HTML for the Modulus homepage.
   }
 );
+
+getNewAniToken();
 
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
