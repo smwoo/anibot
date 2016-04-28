@@ -34,8 +34,10 @@ function getNewAniToken(){
       }
 
       //All is good. Print the body
-      var jbody = JSON.parse(body);
-      ani_token = jbody['access_token'];
+      // var jbody = JSON.parse(body);
+      console.log(body);
+      // console.log(jbody);
+      // ani_token = jbody['access_token'];
     }
   )
 }
@@ -95,7 +97,6 @@ request.post({
   }
 );
 
-console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>\n>>>>>>>>>>>>>>>>>>>>>>>>');
 getNewAniToken();
 
 // Configure the bot API endpoint, details for your bot
