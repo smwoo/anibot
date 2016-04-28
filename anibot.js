@@ -34,27 +34,34 @@ function getNewAniToken(){
       }
 
       //All is good. Print the body
-      // var jbody = JSON.parse(body);
-      console.log(body);
-      // ani_token = jbody['access_token'];
+      ani_token = body['access_token'];
     }
   )
 }
 
-function searchAnime(name, attempt){
+function searchAnime(bot, name, attempt){
   request(ani_endpoint+'anime/search/'+name+'?access_token='+token, function(error, response, body){
     if(error){
       console.log('Error:', error);
-      if(response.statusCode == 401 && attempt == 0){
-      	getNewAniToken();
-      	searchAnime(name, attempt++);
+      if(response.statusCode == 401){
+        if(attempt == 0){
+	      	getNewAniToken();
+	      	searchAnime(name, attempt++);
+	      }
+	      else{
+	      	return 1;
+	      }
       }
-      return 1;
     }
 
     if(response.statusCode == 200){
-    	var jbody = JSON.parse(body);
+    	if(body.length == 1){
 
+    	}
+    	var names[];
+    	for(i=0; i<body.length; i++){
+    		names.push(body[i]['title_romaji']);
+    	}
     }
   })
 }
