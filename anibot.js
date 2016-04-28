@@ -95,6 +95,7 @@ request.post({
   }
 );
 
+console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>\n>>>>>>>>>>>>>>>>>>>>>>>>');
 getNewAniToken();
 
 // Configure the bot API endpoint, details for your bot
