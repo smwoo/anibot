@@ -118,8 +118,12 @@ bot.onTextMessage((message) => {
 	if(text === 'airing'){
 		console.log('in reply');
 		browseAiring(bot, 0, function(names){
+			var reply='';
+			for(var i = 0; i < names.length; i++){
+				reply+=names[i]+'\n'
+			}
 			console.log('sending message');
-			message.reply(names);
+			message.reply(reply);
 		});
 	}
 
