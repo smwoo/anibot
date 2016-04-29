@@ -125,7 +125,7 @@ bot.onTextMessage((message) => {
 
 });
 
-browseAiring(bot, 0);
+// browseAiring(bot, 0);
 
 // Set up your server and start listening
 let server = http
