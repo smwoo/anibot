@@ -120,7 +120,7 @@ bot.onTextMessage((message) => {
 		browseAiring(bot, 0, function(names){
 			var reply='';
 			for(var i = 0; i < names.length; i++){
-				reply+=names[i]+'\n'
+				reply+=names[i]+'\n\n'
 			}
 			console.log('sending message');
 			message.reply(reply);
