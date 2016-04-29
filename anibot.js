@@ -119,7 +119,7 @@ bot.onTextMessage((message) => {
 		browseAiring(bot, 0, function(names){
 			console.log('sending message');
 			message.reply(names);
-		})
+		});
 	}
 
 });
