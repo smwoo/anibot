@@ -43,6 +43,7 @@ function getNewAniToken(callback){
 }
 
 function browseAiring(bot, attempt, callback){
+	var names = [];
 	console.log('starting browsing');
   request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season=spring&full_page=true&access_token='+ani_token,
   function(error, response, body){
@@ -57,7 +58,6 @@ function browseAiring(bot, attempt, callback){
     }
 
     if(response.statusCode == 200){
-    	var names = [];
   		var janimes = JSON.parse(body)
     	for(var i=0; i<janimes.length; i++){
     		var janime = janimes[i];
