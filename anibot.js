@@ -9,9 +9,10 @@ var request = require('request');
 var ani_client_id = "mwoo-8zevs";
 var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
 var ani_endpoint = "https://anilist.co/api/";
-var ani_token = '';
+var ani_token = "";
 
-function getNewAniToken(){
+function getNewAniToken(callback){
+	console.log('getting new token');
   var ani_refresh = {
     grant_type: "client_credentials",
     client_id: ani_client_id,
@@ -35,33 +36,35 @@ function getNewAniToken(){
 
       //All is good. Print the body
       ani_token = body['access_token'];
+      console.log('new token: ', ani_token);
+      callback();
     }
   )
 }
 
-function searchAnime(bot, name, attempt){
-  request(ani_endpoint+'anime/search/'+name+'?access_token='+token, function(error, response, body){
-    if(error){
-      console.log('Error:', error);
-      if(response.statusCode == 401){
-        if(attempt == 0){
-	      	getNewAniToken();
-	      	searchAnime(name, attempt++);
-	      }
-	      else{
-	      	return 1;
-	      }
+function browseAiring(bot, attempt){
+	console.log('starting browsing');
+  request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season=spring&full_page=true&access_token='+ani_token,
+  function(error, response, body){
+  	console.log('browsing callback');
+    if(response.statusCode == 401){
+      if(attempt == 0){
+      	return getNewAniToken(function(){browseAiring(bot, attempt++)});
+      }
+      else{
+      	return 1;
       }
     }
 
     if(response.statusCode == 200){
-    	if(body.length == 1){
-
+    	var names = [];
+  		var janimes = JSON.parse(body)
+    	for(var i=0; i<janimes.length; i++){
+    		var janime = janimes[i];
+    		names.push(janime['title_romaji']);
+	    	// console.log(names[i]);
     	}
-    	var names[];
-    	for(i=0; i<body.length; i++){
-    		names.push(body[i]['title_romaji']);
-    	}
+    	return names;
     }
   })
 }
@@ -103,16 +106,22 @@ request.post({
   }
 );
 
-getNewAniToken();
-
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
 
 bot.updateBotConfiguration();
 
 bot.onTextMessage((message) => {
-    message.reply(message.body);
+	var text = message.body;
+	if(text === 'airing'){
+		browseAiring(bot, 0, function(names){
+			message.reply(names);
+		})
+	}
+
 });
+
+browseAiring(bot, 0);
 
 // Set up your server and start listening
 let server = http
