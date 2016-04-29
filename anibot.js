@@ -42,7 +42,7 @@ function getNewAniToken(callback){
   )
 }
 
-function browseAiring(bot, attempt){
+function browseAiring(bot, attempt, callback){
 	console.log('starting browsing');
   request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season=spring&full_page=true&access_token='+ani_token,
   function(error, response, body){
@@ -65,9 +65,10 @@ function browseAiring(bot, attempt){
 	    	// console.log(names[i]);
     	}
     	console.log('returning');
-    	return names;
+    	// return names;
     }
   })
+  callback();
 }
 
 // // kikbot auth
