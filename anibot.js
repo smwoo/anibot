@@ -64,6 +64,7 @@ function browseAiring(bot, attempt){
     		names.push(janime['title_romaji']);
 	    	// console.log(names[i]);
     	}
+    	console.log('returning');
     	return names;
     }
   })
