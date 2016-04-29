@@ -114,6 +114,7 @@ bot.updateBotConfiguration();
 bot.onTextMessage((message) => {
 	var text = message.body;
 	if(text === 'airing'){
+		console.log('in reply');
 		browseAiring(bot, 0, function(names){
 			message.reply(names);
 		})
