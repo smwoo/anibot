@@ -66,7 +66,7 @@ function browseAiring(bot, attempt, callback){
     	}
     	console.log('returning');
     	// return names;
-    	callback();
+    	callback(names);
     }
   })
 }
