@@ -49,7 +49,7 @@ function browseAiring(bot, attempt, callback){
   	console.log('browsing callback');
     if(response.statusCode == 401){
       if(attempt == 0){
-      	return getNewAniToken(function(){browseAiring(bot, attempt++)});
+      	return getNewAniToken(function(){browseAiring(bot, attempt++, callback)});
       }
       else{
       	return 1;
