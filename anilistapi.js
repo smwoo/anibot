@@ -1,36 +1,35 @@
-module.exports = {
+function getNewAniToken(callback){
+  console.log('getting new token');
+  var ani_refresh = {
+    grant_type: "client_credentials",
+    client_id: ani_client_id,
+    client_secret: ani_client_secret
+  };
 
-  function getNewAniToken(callback){
-    console.log('getting new token');
-    var ani_refresh = {
-      grant_type: "client_credentials",
-      client_id: ani_client_id,
-      client_secret: ani_client_secret
-    };
-
-    request.post({
-      url: ani_endpoint+'auth/access_token',
-      json: ani_refresh
-      },
-      function (error, response, body) {
-        //Check for error
-        if(error){
-            return console.log('Error:', error);
-        }
-
-        //Check for right status code
-        if(response.statusCode !== 200){
-            return console.log('Invalid Status Code Returned:', response.statusCode);
-        }
-
-        //All is good. Print the body
-        ani_token = body['access_token'];
-        console.log('new token: ', ani_token);
-        callback();
+  request.post({
+    url: ani_endpoint+'auth/access_token',
+    json: ani_refresh
+    },
+    function (error, response, body) {
+      //Check for error
+      if(error){
+          return console.log('Error:', error);
       }
-    )
-  }
 
+      //Check for right status code
+      if(response.statusCode !== 200){
+          return console.log('Invalid Status Code Returned:', response.statusCode);
+      }
+
+      //All is good. Print the body
+      ani_token = body['access_token'];
+      console.log('new token: ', ani_token);
+      callback();
+    }
+  )
+}
+
+module.exports = {
   browseAiring: function(bot, attempt, callback){
     console.log('starting browsing');
     request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season=spring&full_page=true&access_token='+ani_token,
