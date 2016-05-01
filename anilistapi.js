@@ -1,6 +1,6 @@
 module.exports = {
 
-  getNewAniToken: function(callback){
+  function getNewAniToken(callback){
     console.log('getting new token');
     var ani_refresh = {
       grant_type: "client_credentials",
