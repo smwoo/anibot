@@ -1,7 +1,4 @@
 module.exports = {
-  var ani_client_id = process.env.ANILISTCLIENTID;
-  var ani_client_secret = process.env.ANILISTCLIENTSECRET;
-  var ani_endpoint = "https://anilist.co/api/";
 
   getNewAniToken: function(callback){
     console.log('getting new token');

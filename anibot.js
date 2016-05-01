@@ -11,6 +11,9 @@ let Bot  = require('@kikinteractive/kik');
 var request = require('request');
 
 // anilist token
+var ani_client_id = process.env.ANILISTCLIENTID;
+var ani_client_secret = process.env.ANILISTCLIENTSECRET;
+var ani_endpoint = "https://anilist.co/api/";
 var ani_token = "";
 var anilist = require('./anilistapi');
 
