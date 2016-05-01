@@ -1,15 +1,34 @@
 'use strict';
 
+var mongo = require('mongodb');
+var mongo_user = process.env.MONGOUSER;
+var mongo_pass = process.env.MONGOPASS;
+var murl = 'mongodb://'+mongo_user+':'+mongo_pass+'@ds011912.mlab.com:11912/anibotdb';
+
 let util = require('util');
 let http = require('http');
 let Bot  = require('@kikinteractive/kik');
 var request = require('request');
 
 // anilist oauth
-var ani_client_id = "mwoo-8zevs";
-var ani_client_secret = "PVbpoDC2My1xqyuL5OHK";
+var ani_client_id = process.env.ANILISTCLIENTID;
+var ani_client_secret = process.env.ANILISTCLIENTSECRET;
 var ani_endpoint = "https://anilist.co/api/";
 var ani_token = "";
+
+// // kikbot auth
+var botname = process.env.KIKBOTNAME;
+var botkey = process.env.KIKBOTKEY;
+var botUrl = process.env.KIKBOTURL;
+
+var botsettings = {
+  username: botname,
+  apiKey: botkey,
+  baseUrl: '/incoming'
+};
+
+var bothooksettings = {webhook: botUrl,
+                       features: {}};
 
 function getNewAniToken(callback){
 	console.log('getting new token');
@@ -70,20 +89,6 @@ function browseAiring(bot, attempt, callback){
     }
   })
 }
-
-// // kikbot auth
-var botname = 'anibot';
-var botkey = '90b0e4fd-177a-4610-ab20-efa3684be264';
-var botUrl = "https://anibot.herokuapp.com/incoming";
-
-var botsettings = {
-  username: botname,
-  apiKey: botkey,
-  baseUrl: '/incoming'
-};
-
-var bothooksettings = {webhook: botUrl,
-                       features: {}};
 
 // // set bot's webhook to the heroku app
 request.post({
