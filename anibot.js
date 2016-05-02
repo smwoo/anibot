@@ -1,5 +1,7 @@
 'use strict';
 
+var promisemodule = require('promise')
+
 var mongo = require('mongodb');
 var mongo_user = process.env.MONGOUSER;
 var mongo_pass = process.env.MONGOPASS;
@@ -145,49 +147,55 @@ let bot = new Bot(botsettings);
 bot.updateBotConfiguration();
 
 bot.onTextMessage((message) => {
-	var userCollection = db.collection('conversations');
-
-	userCollection.find({'name': message.from}).toArray(function(message){
-		return function(err, userarray){
-			console.log('userCollection');
-			if(users.length == 0){
-				console.log('new user');
-				userarray.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
-				var text = message.body;
-				if(text == 'airing'){
-
-				}
-				else if(text == 'search'){
-
-				}
-				else{
-					var reply = message.text();
-					reply.body = "Sorry i didn't get that, please tell me your request";
-					var keyboard = [{'to': message.from,
-													 'type': 'suggested',
-													 'responses':[{"type":"text",
-													 							 "body":"view and subscribe to the airing season"},
-													 							{"type":"text",
-													 							 "body":"search anime"}]
-													}]
-					bot.send([reply], message.from, message.chatId);
-				}
-			}
+	var conversationCollection = db.collection('conversations');
+	var userarray;
+	var findconversationpromise = new promisemodule(function(resolve, reject){
+		userarray = userCollection.find({'name': message.from}).toArray();
+		if(userarray.length == 0){
+			reject();
+		}
+		else{
+			fulfill();
 		}
 	})
 
-	var text = message.body;
-	if(text === 'airing'){
-		console.log('in reply');
-		browseAiring(0, function(names){
-			var reply='';
-			for(var i = 0; i < names.length; i++){
-				reply+=names[i]+'\n\n'
-			}
-			console.log('sending message');
-			message.reply(reply);
-		});
-	}
+	findconversationpromise.then(function foundconversation(){
+
+	}, function newconversation(){
+		conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
+		var text = message.body;
+		if(text == 'airing'){
+
+		}
+		else if(text == 'search'){
+
+		}
+		else{
+			var reply = message.text();
+			reply.body = "Sorry i didn't get that, please tell me your request";
+			var keyboard = [{'to': message.from,
+											 'type': 'suggested',
+											 'responses':[{"type":"text",
+											 							 "body":"view and subscribe to the airing season"},
+											 							{"type":"text",
+											 							 "body":"search anime"}]
+											}]
+			bot.send([reply], message.from, message.chatId);
+		}
+	})
+
+	// var text = message.body;
+	// if(text === 'airing'){
+	// 	console.log('in reply');
+	// 	browseAiring(0, function(names){
+	// 		var reply='';
+	// 		for(var i = 0; i < names.length; i++){
+	// 			reply+=names[i]+'\n\n'
+	// 		}
+	// 		console.log('sending message');
+	// 		message.reply(reply);
+	// 	});
+	// }
 
 });
 

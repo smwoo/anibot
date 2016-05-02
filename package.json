@@ -15,7 +15,8 @@
     "@kikinteractive/kik" : "2.0.2",
     "request" : "2.72.0",
     "cron" : "1.1.0",
-    "mongodb" : "2.1.18"
+    "mongodb" : "2.1.18",
+    "promise" : "7.1.1"
   },
   "keywords": [
     "anime"
