@@ -4,8 +4,16 @@ var mongo = require('mongodb');
 var mongo_user = process.env.MONGOUSER;
 var mongo_pass = process.env.MONGOPASS;
 var murl = 'mongodb://'+mongo_user+':'+mongo_pass+'@ds011912.mlab.com:11912/anibotdb';
-
 var mongoClient = mongo.MongoClient;
+var db;
+mongoClient.connect(murl, function(err, returndb){
+  if (err) {
+    console.log('unable to connect to mongodb server, Error: ', err);
+  } else {
+    console.log('established connection to ', murl);
+    db = returndb;
+  }
+});
 
 let util = require('util');
 let http = require('http');
@@ -117,27 +125,18 @@ request.post({
 
 // update our database with current anime's
 browseAiring(0, function(animes){
-  mongoClient.connect(murl, function(err, db){
-  if (err) {
-    console.log('unable to connect to mongodb server, Error: ', err);
-  } else {
-    console.log('established connection to ', murl);
-    animes.forEach(function(anime){
-      var insert_anime = {'title':anime['title_romaji'],
-                          'id':anime['id'],
-                          'airing_status':anime['airing_status'],
-                          'airing':anime['airing']}
-      var collection = db.collection('airing');
-      collection.update({'title': anime['title_romaji']}, {$set: insert_anime}, function(err, result){
-        if(err){
-          console.log('error updating anime');
-        }
-      })
+  animes.forEach(function(anime){
+    var insert_anime = {'title':anime['title_romaji'],
+                        'id':anime['id'],
+                        'airing_status':anime['airing_status'],
+                        'airing':anime['airing']}
+    var collection = db.collection('airing');
+    collection.update({'title': anime['title_romaji']}, {$set: insert_anime}, function(err, result){
+      if(err){
+        console.log('error updating anime');
+      }
     })
-  }
-
-  db.close();
-})
+  })
 })
 
 
