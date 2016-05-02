@@ -5,6 +5,8 @@ var mongo_user = process.env.MONGOUSER;
 var mongo_pass = process.env.MONGOPASS;
 var murl = 'mongodb://'+mongo_user+':'+mongo_pass+'@ds011912.mlab.com:11912/anibotdb';
 
+var mongoClient = mongo.MongoClient;
+
 let util = require('util');
 let http = require('http');
 let Bot  = require('@kikinteractive/kik');
@@ -61,14 +63,14 @@ function getNewAniToken(callback){
   )
 }
 
-function browseAiring(bot, attempt, callback){
+function browseAiring(attempt, callback){
 	console.log('starting browsing');
   request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season=spring&full_page=true&access_token='+ani_token,
   function(error, response, body){
   	console.log('browsing callback');
     if(response.statusCode == 401){
       if(attempt == 0){
-      	return getNewAniToken(function(){browseAiring(bot, attempt++, callback)});
+      	return getNewAniToken(function(){browseAiring(attempt++, callback)});
       }
       else{
       	return 1;
@@ -78,14 +80,14 @@ function browseAiring(bot, attempt, callback){
     if(response.statusCode == 200){
     	var names = [];
   		var janimes = JSON.parse(body)
-    	for(var i=0; i<janimes.length; i++){
-    		var janime = janimes[i];
-    		names.push(janime['title_romaji']);
-	    	// console.log(names[i]);
-    	}
+    	// for(var i=0; i<janimes.length; i++){
+    	// 	var janime = janimes[i];
+    	// 	names.push(janime['title_romaji']);
+	    // 	// console.log(names[i]);
+    	// }
     	console.log('returning');
     	// return names;
-    	callback(names);
+    	callback(janimes);
     }
   })
 }
@@ -113,6 +115,32 @@ request.post({
   }
 );
 
+// update our database with current anime's
+browseAiring(0, function(animes){
+  mongoClient.connect(murl, function(err, db){
+  if (err) {
+    console.log('unable to connect to mongodb server, Error: ', err);
+  } else {
+    console.log('established connection to ', murl);
+    animes.forEach(function(anime){
+      var insert_anime = {'title':anime['title_romaji'],
+                          'id':anime['id'],
+                          'airing_status':anime['airing_status'],
+                          'airing':anime['airing']}
+      var collection = db.collection('airing');
+      collection.update({'title': anime['title_romaji']}, {$set: insert_anime}, function(err, result){
+        if(err){
+          console.log('error updating anime');
+        }
+      })
+    })
+  }
+
+  db.close();
+})
+})
+
+
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
 
@@ -122,7 +150,7 @@ bot.onTextMessage((message) => {
 	var text = message.body;
 	if(text === 'airing'){
 		console.log('in reply');
-		browseAiring(bot, 0, function(names){
+		browseAiring(0, function(names){
 			var reply='';
 			for(var i = 0; i < names.length; i++){
 				reply+=names[i]+'\n\n'
