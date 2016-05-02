@@ -152,16 +152,16 @@ bot.onTextMessage((message) => {
 	console.log('enterin promise')
 	var findconversationpromise = new promisemodule(function(resolve, reject){
 		userCollection.find({'name': message.from}).toArray(function(err, userarray){
+			console.log('userarray: ');
 			console.log(userarray);
 			if(userarray.length == 0){
 				reject();
 			}
 			else{
-				fulfill();
+				resolve();
 			}
 		});
 	})
-	console.log('hello world')
 	findconversationpromise.then(function foundconversation(){
 		// insert existing user code here
 	}, function newconversation(){
