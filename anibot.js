@@ -146,7 +146,6 @@ bot.updateBotConfiguration();
 
 bot.onTextMessage((message) => {
 	var userCollection = db.collection('conversations');
-	console.log(userCollection);
 
 	userCollection.find({'name': message.from}).toArray(function(message){
 		return function(err, userarray){
