@@ -73,7 +73,7 @@ function getNewAniToken(callback){
 
 function browseAiring(attempt, callback){
 	console.log('starting browsing');
-  request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season=spring&full_page=true&access_token='+ani_token,
+  request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season=spring&airing_data=true&full_page=true&access_token='+ani_token,
   function(error, response, body){
   	console.log('browsing callback');
     if(response.statusCode == 401){
