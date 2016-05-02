@@ -127,11 +127,10 @@ request.post({
 browseAiring(0, function(animes){
   animes.forEach(function(anime){
     var insert_anime = {'title':anime['title_romaji'],
-                        'id':anime['id'],
                         'airing_status':anime['airing_status'],
                         'airing':anime['airing']}
     var collection = db.collection('airing');
-    collection.update({'title': anime['title_romaji']}, {$set: insert_anime}, function(err, result){
+    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
       if(err){
         console.log('error updating anime');
       }
