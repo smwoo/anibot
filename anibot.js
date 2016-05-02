@@ -126,7 +126,6 @@ request.post({
 // update our database with current anime's
 browseAiring(0, function(animes){
   animes.forEach(function(anime){
-    console.log("airing: ", anime);
     var insert_anime = {'title':anime['title_romaji'],
                         'airing_status':anime['airing_status'],
                         'airing':anime['airing']}
@@ -146,6 +145,33 @@ let bot = new Bot(botsettings);
 bot.updateBotConfiguration();
 
 bot.onTextMessage((message) => {
+	var userCollection = db.collection('conversations');
+
+	userCollection.find({'name': username}).toarray(function(err, userCollection, message){
+		if(users.length == 0){
+			userCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
+			var text = message.body;
+			if(text == 'airing'){
+
+			}
+			else if(text == 'search'){
+
+			}
+			else{
+				var reply = message.text();
+				reply.body = "Sorry i didn't get that, please tell me your request";
+				var keyboard = [{'to': message.from,
+												 'type': 'suggested',
+												 'responses':[{"type":"text",
+												 							 "body":"view and subscribe to the airing season"},
+												 							{"type":"text",
+												 							 "body":"search anime"}]
+												}]
+				bot.send([reply], message.from, message.chatId);
+			}
+		}
+	})
+
 	var text = message.body;
 	if(text === 'airing'){
 		console.log('in reply');
