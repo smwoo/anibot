@@ -161,7 +161,7 @@ bot.onTextMessage((message) => {
 			}
 		});
 	})
-
+	console.log('hello world')
 	findconversationpromise.then(function foundconversation(){
 		// insert existing user code here
 	}, function newconversation(){
