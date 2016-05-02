@@ -151,6 +151,7 @@ bot.onTextMessage((message) => {
 	var userarray;
 	var findconversationpromise = new promisemodule(function(resolve, reject){
 		userCollection.find({'name': message.from}).toArray(function(err, userarray){
+			console.log(userarray);
 			if(userarray.length == 0){
 				reject();
 			}
