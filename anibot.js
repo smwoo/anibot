@@ -149,10 +149,11 @@ bot.onTextMessage((message) => {
 	console.log(userCollection);
 
 	userCollection.find({'name': message.from}).toArray(function(message){
-		return function(err, userCollection){
+		return function(err, userarray){
+			console.log('userCollection');
 			if(users.length == 0){
 				console.log('new user');
-				userCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
+				userarray.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
 				var text = message.body;
 				if(text == 'airing'){
 
