@@ -126,7 +126,7 @@ request.post({
 // update our database with current anime's
 browseAiring(0, function(animes){
   animes.forEach(function(anime){
-    console.log("airing: ", anime['airing']);
+    console.log("airing: ", anime);
     var insert_anime = {'title':anime['title_romaji'],
                         'airing_status':anime['airing_status'],
                         'airing':anime['airing']}
