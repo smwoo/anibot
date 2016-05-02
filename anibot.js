@@ -150,17 +150,18 @@ bot.onTextMessage((message) => {
 	var conversationCollection = db.collection('conversations');
 	var userarray;
 	var findconversationpromise = new promisemodule(function(resolve, reject){
-		userarray = userCollection.find({'name': message.from}).toArray();
-		if(userarray.length == 0){
-			reject();
-		}
-		else{
-			fulfill();
-		}
+		userCollection.find({'name': message.from}).toArray(function(err, userarray){
+			if(userarray.length == 0){
+				reject();
+			}
+			else{
+				fulfill();
+			}
+		});
 	})
 
 	findconversationpromise.then(function foundconversation(){
-
+		// insert existing user code here
 	}, function newconversation(){
 		conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
 		var text = message.body;
