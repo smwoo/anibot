@@ -147,7 +147,7 @@ bot.updateBotConfiguration();
 bot.onTextMessage((message) => {
 	var userCollection = db.collection('conversations');
 
-	userCollection.find({'name': message.from}).toarray(function(err, userCollection, message){
+	userCollection.find({'name': message.from}).toArray(function(err, userCollection, message){
 		if(users.length == 0){
 			userCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
 			var text = message.body;
