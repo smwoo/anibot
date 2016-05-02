@@ -149,6 +149,7 @@ bot.updateBotConfiguration();
 bot.onTextMessage((message) => {
 	var conversationCollection = db.collection('conversations');
 	var userarray;
+	console.log('enterin promise')
 	var findconversationpromise = new promisemodule(function(resolve, reject){
 		userCollection.find({'name': message.from}).toArray(function(err, userarray){
 			console.log(userarray);
