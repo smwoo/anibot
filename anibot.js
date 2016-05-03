@@ -149,11 +149,10 @@ bot.onTextMessage((message) => {
 			}
 		});
 	})
-	findconversationpromise.then(function foundconversation(){
+	findconversationpromise.done(function foundconversation(){
 		// insert existing user code here
 	}, function newconversation(){
 		conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
-		console.log(message.body);
 		var text = message.body;
 		if(text == 'airing'){
 
