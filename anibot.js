@@ -43,7 +43,6 @@ var bothooksettings = {webhook: botUrl,
                        features: {}};
 
 function getNewAniToken(callback){
-	console.log('getting new token');
   var ani_refresh = {
     grant_type: "client_credentials",
     client_id: ani_client_id,
@@ -74,10 +73,8 @@ function getNewAniToken(callback){
 }
 
 function browseAiring(attempt, callback){
-	console.log('starting browsing');
   request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season=spring&airing_data=true&full_page=true&access_token='+ani_token,
   function(error, response, body){
-  	console.log('browsing callback');
     if(response.statusCode == 401){
       if(attempt == 0){
       	return getNewAniToken(function(){browseAiring(attempt++, callback)});
@@ -90,13 +87,6 @@ function browseAiring(attempt, callback){
     if(response.statusCode == 200){
     	var names = [];
   		var janimes = JSON.parse(body)
-    	// for(var i=0; i<janimes.length; i++){
-    	// 	var janime = janimes[i];
-    	// 	names.push(janime['title_romaji']);
-	    // 	// console.log(names[i]);
-    	// }
-    	console.log('returning');
-    	// return names;
     	callback(janimes);
     }
   })
@@ -118,10 +108,6 @@ request.post({
     if(response.statusCode !== 200){
         return console.log('Invalid Status Code Returned:', response.statusCode);
     }
-
-    //All is good. Print the body
-    console.log('success');
-    // console.log(body); // Show the HTML for the Modulus homepage.
   }
 );
 
@@ -149,12 +135,13 @@ bot.updateBotConfiguration();
 bot.onTextMessage((message) => {
 	var conversationCollection = db.collection('conversations');
 	var userarray;
-	console.log('enterin promise')
+	console.log('entering promise')
 	var findconversationpromise = new promisemodule(function(resolve, reject){
 		userCollection.find({'name': message.from}).toArray(function(err, userarray){
 			console.log('userarray: ');
 			console.log(userarray);
 			if(userarray.length == 0){
+				console.log('hahahaha')
 				reject();
 			}
 			else{
