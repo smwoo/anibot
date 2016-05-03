@@ -137,7 +137,7 @@ bot.onTextMessage((message) => {
 	var userarray;
 	console.log('entering promise')
 	var findconversationpromise = new promisemodule(function(resolve, reject){
-		userCollection.find({'name': message.from}).toArray(function(err, userarray){
+		conversationCollection.find({'name': message.from}).toArray(function(err, userarray){
 			console.log('userarray: ');
 			console.log(userarray);
 			if(userarray.length == 0){
@@ -154,10 +154,10 @@ bot.onTextMessage((message) => {
 	}, function newconversation(){
 		conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
 		var text = message.body;
-		if(text == 'airing'){
+		if(text == 'view and subscribe to the airing season'){
 
 		}
-		else if(text == 'search'){
+		else if(text == 'search anime'){
 
 		}
 		else{
@@ -165,24 +165,9 @@ bot.onTextMessage((message) => {
 			reply.setBody("Sorry i didn't get that, please tell me your request");
 			var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
 			reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
-			console.log(reply);
 			bot.send([reply], message.from);
 		}
 	})
-
-	// var text = message.body;
-	// if(text === 'airing'){
-	// 	console.log('in reply');
-	// 	browseAiring(0, function(names){
-	// 		var reply='';
-	// 		for(var i = 0; i < names.length; i++){
-	// 			reply+=names[i]+'\n\n'
-	// 		}
-	// 		console.log('sending message');
-	// 		message.reply(reply);
-	// 	});
-	// }
-
 });
 
 // browseAiring(bot, 0);
