@@ -166,6 +166,7 @@ bot.onTextMessage((message) => {
 		// insert existing user code here
 	}, function newconversation(){
 		conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
+		console.log(message.body);
 		var text = message.body;
 		if(text == 'airing'){
 
@@ -174,6 +175,7 @@ bot.onTextMessage((message) => {
 
 		}
 		else{
+			console.log('reply else');
 			var reply = message.text();
 			reply.body = "Sorry i didn't get that, please tell me your request";
 			var keyboard = [{'to': message.from,
