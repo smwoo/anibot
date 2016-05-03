@@ -161,7 +161,7 @@ bot.onTextMessage((message) => {
 
 		}
 		else{
-			var reply = Message.text;
+			var reply = Message.text();
 			reply.setBody("Sorry i didn't get that, please tell me your request");
 			var keyboardsuggestions = [{"type":"text",
 									 						    "body":"view and subscribe to the airing season"},
