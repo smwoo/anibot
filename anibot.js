@@ -175,17 +175,15 @@ bot.onTextMessage((message) => {
 
 		}
 		else{
-			console.log('reply else');
 			var reply = message.text();
 			reply.body = "Sorry i didn't get that, please tell me your request";
-			var keyboard = [{'to': message.from,
-											 'type': 'suggested',
-											 'responses':[{"type":"text",
-											 							 "body":"view and subscribe to the airing season"},
-											 							{"type":"text",
-											 							 "body":"search anime"}]
-											}]
-			bot.send([reply], message.from, message.chatId);
+			var keyboardsuggestions = [{"type":"text",
+									 						    "body":"view and subscribe to the airing season"},
+									 						   {"type":"text",
+									 						    "body":"search anime"}]
+			reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+			console.log(reply);
+			bot.send([reply], message.from);
 		}
 	})
 
