@@ -163,6 +163,7 @@ bot.onTextMessage((message) => {
 					for (var i = 0; i < animearray.length; i++) {
 						keyboardsuggestions.push(animearray[i]['title']);
 					}
+					console.log(keyboardsuggestions);
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
 				});
