@@ -171,7 +171,7 @@ bot.onTextMessage((message) => {
 					reply.setBody("Please select an anime from this season");
 					var keyboardsuggestions = [];
 					for (var i = 0; i < 10; i++) {
-						keyboardsuggestions.push('view-'+animearray[i]['title']);
+						keyboardsuggestions.push(animearray[i]['title']);
 					}
 					keyboardsuggestions.push("next page");
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
@@ -200,7 +200,7 @@ bot.onTextMessage((message) => {
 					var keyboardsuggestions = [];
 					for (var i = 10*page; i < 10*page + 10; i++) {
 						if(i<animearray.length){
-							keyboardsuggestions.push('view-'+animearray[i]['title']);
+							keyboardsuggestions.push(animearray[i]['title']);
 						}
 					}
 					if(page*10+10 < animearray.length){
@@ -211,10 +211,12 @@ bot.onTextMessage((message) => {
 					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-'+page, 'timestamp':Date.now()}});
 				});
 			}
-			else if(text.split('-')[0] == 'view'){
-				var animetitle = text.split('-')[1];
+			else{
 				var animeCollection = db.collection('airing');
-				animeCollection.find({'title': animetitle}).toArray(function(err, animearray){
+				animeCollection.find({'title': text}).toArray(function(err, animearray){
+					if(animearray.length == 0){
+						console.log('error finding anime in db');
+					}
 					animeID = animearray[0]['id'];
 					var reply = Bot.Message.link();
 					reply.setUrl("http://anilist.co/anime/"+animeID);
