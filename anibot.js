@@ -211,7 +211,7 @@ bot.onTextMessage((message) => {
 				});
 			}
 		}
-	}
+	})
 });
 
 // browseAiring(bot, 0);
