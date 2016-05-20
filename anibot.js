@@ -200,8 +200,7 @@ bot.onTextMessage((message) => {
 					}
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
-
-					conversationCollection.update({'name':message.from},{'state':'airing-'+page});
+					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-1'}});
 				});
 			}
 		}
