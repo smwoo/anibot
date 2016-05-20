@@ -170,7 +170,7 @@ bot.onTextMessage((message) => {
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
 					console.log(message.from);
-					conversationCollection.update({'name':message.from},{'state':'airing-1'});
+					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-1'}});
 				});
 			}
 			else if(text == 'search anime'){
