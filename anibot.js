@@ -217,7 +217,7 @@ bot.onTextMessage((message) => {
 					if(animearray.length == 0){
 						console.log('error finding anime in db');
 					}
-					animeID = animearray[0]['id'];
+					var animeID = animearray[0]['id'];
 					var reply = Bot.Message.link();
 					reply.setUrl("http://anilist.co/anime/"+animeID);
 					reply.setTitle(animearray[0]['title']);
