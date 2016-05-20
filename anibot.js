@@ -160,7 +160,7 @@ bot.onTextMessage((message) => {
 					var reply = Bot.Message.text();
 					reply.setBody("Please select an anime from this season");
 					var keyboardsuggestions = [];
-					for (var i = 0; i < animearray.length; i++) {
+					for (var i = 0; i < 10; i++) {
 						keyboardsuggestions.push(animearray[i]['title']);
 					}
 					console.log(keyboardsuggestions);
