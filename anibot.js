@@ -141,8 +141,10 @@ bot.onTextMessage((message) => {
 			console.log('user: ');
 			console.log(userarray[0]);
 			if(userarray.length == 0){
-				console.log('hahahaha')
-				reject();
+				conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
+				conversationCollection.find({'name': message.from}).toArray(function(err, userarray){
+					resolve(userarray[0]);
+				});
 			}
 			else{
 				resolve(userarray[0]);
@@ -155,6 +157,11 @@ bot.onTextMessage((message) => {
 		var stateparts = user['state'].split('-');
 		var state = stateparts[0];
 		var page = parseInt(stateparts[1]) + 1;
+		var prevtime = user['timestamp'];
+		if((Date.now() - prevtime)/1000 > 60){
+			state = 'default'
+			conversationCollection.updateOne({'name':message.from},{$set:{'state':'default'}});
+		}
 
 		if(state == 'default'){
 			if(text == 'view and subscribe to the airing season'){
@@ -204,23 +211,7 @@ bot.onTextMessage((message) => {
 				});
 			}
 		}
-	}, function newconversation(){
-		conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
-		var text = message.body;
-		if(text == 'view and subscribe to the airing season'){
-
-		}
-		else if(text == 'search anime'){
-
-		}
-		else{
-			var reply = Bot.Message.text();
-			reply.setBody("Sorry i didn't get that, please tell me your request");
-			var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
-			reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
-			bot.send([reply], message.from);
-		}
-	})
+	}
 });
 
 // browseAiring(bot, 0);
