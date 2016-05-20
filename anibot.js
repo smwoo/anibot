@@ -177,7 +177,7 @@ bot.onTextMessage((message) => {
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
 					console.log(message.from);
-					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-1'}});
+					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-1', 'timestamp':Date.now()}});
 				});
 			}
 			else if(text == 'search anime'){
@@ -188,6 +188,7 @@ bot.onTextMessage((message) => {
 				var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
 				reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 				bot.send([reply], message.from);
+					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now()}});
 			}
 		}
 		else if(state == 'airing'){
@@ -207,7 +208,7 @@ bot.onTextMessage((message) => {
 					}
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
-					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-'+page}});
+					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-'+page, 'timestamp':Date.now()}});
 				});
 			}
 		}
