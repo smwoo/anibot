@@ -171,7 +171,7 @@ bot.onTextMessage((message) => {
 					reply.setBody("Please select an anime from this season");
 					var keyboardsuggestions = [];
 					for (var i = 0; i < 10; i++) {
-						keyboardsuggestions.push(animearray[i]['title']);
+						keyboardsuggestions.push('view-'+animearray[i]['title']);
 					}
 					keyboardsuggestions.push("next page");
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
@@ -200,7 +200,7 @@ bot.onTextMessage((message) => {
 					var keyboardsuggestions = [];
 					for (var i = 10*page; i < 10*page + 10; i++) {
 						if(i<animearray.length){
-							keyboardsuggestions.push(animearray[i]['title']);
+							keyboardsuggestions.push('view-'+animearray[i]['title']);
 						}
 					}
 					if(page*10+10 < animearray.length){
