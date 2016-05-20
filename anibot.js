@@ -154,7 +154,7 @@ bot.onTextMessage((message) => {
 		var text = message.body;
 		var stateparts = user['state'].split('-');
 		var state = stateparts[0];
-		var page = stateparts[1] + 1;
+		var page = int(stateparts[1]) + 1;
 
 		if(state == 'default'){
 			if(text == 'view and subscribe to the airing season'){
