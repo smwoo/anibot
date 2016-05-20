@@ -158,8 +158,11 @@ bot.onTextMessage((message) => {
 				var animeCollection = db.collection('airing');
 				animeCollection.find().sort({'title': 1}).toArray(function(err, animearray){
 					var reply = Bot.Message.text();
-					reply.setBody(animearray[0]['title']+'\n'+animearray[1]['title']+'\n'+animearray[2]['title']+'\n'+animearray[3]['title']+'\n'+animearray[4]['title']);
-					var keyboardsuggestions = ["next page", animearray[0]['title'], animearray[1]['title'], animearray[2]['title'], animearray[3]['title'], animearray[4]['title']]
+					reply.setBody("Please select an anime from this season");
+					var keyboardsuggestions = [];
+					for (var i = 0; i < animearray.length; i++) {
+						keyboardsuggestions.push(animearray[i]);
+					}
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
 				});
