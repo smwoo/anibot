@@ -152,7 +152,10 @@ bot.onTextMessage((message) => {
 	findconversationpromise.done(function foundconversation(user){
 		// insert existing user code here
 		var text = message.body;
-		var state = user['state'];
+		var stateparts = user['state'].split('-');
+		var state = stateparts[0];
+		var page = stateparts[1] + 1;
+
 		if(state == 'default'){
 			if(text == 'view and subscribe to the airing season'){
 				var animeCollection = db.collection('airing');
@@ -163,9 +166,12 @@ bot.onTextMessage((message) => {
 					for (var i = 0; i < 10; i++) {
 						keyboardsuggestions.push(animearray[i]['title']);
 					}
+					keyboardsuggestions.push("next page");
 					console.log(keyboardsuggestions);
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
+
+					conversationCollection.update({'name':message.from},{'state':'airing-1'});
 				});
 			}
 			else if(text == 'search anime'){
@@ -176,6 +182,29 @@ bot.onTextMessage((message) => {
 				var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
 				reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 				bot.send([reply], message.from);
+			}
+		}
+		else if(state == 'airing'){
+			if(text == 'next page'){
+				var animeCollection = db.collection('airing');
+				animeCollection.find().sort({'title': 1}).toArray(function(err, animearray){
+					var reply = Bot.Message.text();
+					reply.setBody("Please select an anime from this season");
+					var keyboardsuggestions = [];
+					for (var i = 10*page; i < 10*page + 10; i++) {
+						if(i<=animearray.length){
+							keyboardsuggestions.push(animearray[i]['title']);
+						}
+					}
+					if(page*10+10 < animearray.length){
+						keyboardsuggestions.push("next page");
+					}
+					console.log(keyboardsuggestions);
+					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+					bot.send([reply], message.from);
+
+					conversationCollection.update({'name':message.from},{'state':'airing-'+page});
+				});
 			}
 		}
 	}, function newconversation(){
