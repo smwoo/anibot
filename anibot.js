@@ -158,7 +158,7 @@ bot.onTextMessage((message) => {
 				var animeCollection = db.collection('airing');
 				animeCollection.find().sort({'title': 1}).toArray(function(err, animearray){
 					var reply = Bot.Message.text();
-					reply.setBody(string(animearray[0]+'\n'+animearray[1]+'\n'+animearray[2]+'\n'+animearray[3]+'\n'+animearray[4]));
+					reply.setBody(String(animearray[0]+'\n'+animearray[1]+'\n'+animearray[2]+'\n'+animearray[3]+'\n'+animearray[4]));
 					var keyboardsuggestions = ["next page", animearray[0]['title'], animearray[1]['title'], animearray[2]['title'], animearray[3]['title'], animearray[4]['title']]
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
