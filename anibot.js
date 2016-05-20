@@ -151,6 +151,20 @@ bot.onTextMessage((message) => {
 	})
 	findconversationpromise.done(function foundconversation(){
 		// insert existing user code here
+		var text = message.body;
+		if(text == 'view and subscribe to the airing season'){
+
+		}
+		else if(text == 'search anime'){
+
+		}
+		else{
+			var reply = Bot.Message.text();
+			reply.setBody("Sorry i didn't get that, please tell me your request");
+			var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
+			reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+			bot.send([reply], message.from);
+		}
 	}, function newconversation(){
 		conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
 		var text = message.body;
