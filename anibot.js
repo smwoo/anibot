@@ -191,7 +191,7 @@ bot.onTextMessage((message) => {
 					reply.setBody("Please select an anime from this season");
 					var keyboardsuggestions = [];
 					for (var i = 10*page; i < 10*page + 10; i++) {
-						if(i<=animearray.length){
+						if(i<animearray.length){
 							keyboardsuggestions.push(animearray[i]['title']);
 						}
 					}
