@@ -138,32 +138,41 @@ bot.onTextMessage((message) => {
 	console.log('entering promise')
 	var findconversationpromise = new promisemodule(function(resolve, reject){
 		conversationCollection.find({'name': message.from}).toArray(function(err, userarray){
-			console.log('userarray: ');
-			console.log(userarray);
+			console.log('user: ');
+			console.log(userarray[0]);
 			if(userarray.length == 0){
 				console.log('hahahaha')
 				reject();
 			}
 			else{
-				resolve();
+				resolve(userarray[0]);
 			}
 		});
 	})
-	findconversationpromise.done(function foundconversation(){
+	findconversationpromise.done(function foundconversation(user){
 		// insert existing user code here
 		var text = message.body;
-		if(text == 'view and subscribe to the airing season'){
-
-		}
-		else if(text == 'search anime'){
-
-		}
-		else{
-			var reply = Bot.Message.text();
-			reply.setBody("Sorry i didn't get that, please tell me your request");
-			var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
-			reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
-			bot.send([reply], message.from);
+		var state = user['state'];
+		if(state == 'default'){
+			if(text == 'view and subscribe to the airing season'){
+				var animeCollection = db.collection('airing');
+				animeCollection.find().sort({'title': 1}).toArray(function(err, animearray){
+					var reply = Bot.Message.text();
+					reply.setBody(animearray[0]+'\n'+animearray[1]+'\n'+animearray[2]+'\n'+animearray[3]+'\n'+animearray[4]+'\n');
+					var keyboardsuggestions = ["next page", animearray[0]['title'], animearray[1]['title'], animearray[2]['title'], animearray[3]['title'], animearray[4]['title']]
+					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+					bot.send([reply], message.from);
+				});
+			}
+			else if(text == 'search anime'){
+			}
+			else{
+				var reply = Bot.Message.text();
+				reply.setBody("Sorry i didn't get that, please tell me your request");
+				var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
+				reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+				bot.send([reply], message.from);
+			}
 		}
 	}, function newconversation(){
 		conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
