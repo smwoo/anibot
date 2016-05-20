@@ -167,10 +167,9 @@ bot.onTextMessage((message) => {
 						keyboardsuggestions.push(animearray[i]['title']);
 					}
 					keyboardsuggestions.push("next page");
-					console.log(keyboardsuggestions);
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
-
+					console.log(message.from);
 					conversationCollection.update({'name':message.from},{'state':'airing-1'});
 				});
 			}
@@ -199,7 +198,6 @@ bot.onTextMessage((message) => {
 					if(page*10+10 < animearray.length){
 						keyboardsuggestions.push("next page");
 					}
-					console.log(keyboardsuggestions);
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
 
