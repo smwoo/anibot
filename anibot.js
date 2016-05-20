@@ -211,6 +211,19 @@ bot.onTextMessage((message) => {
 					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-'+page, 'timestamp':Date.now()}});
 				});
 			}
+			else if(text.split('-')[0] == 'view'){
+				var animetitle = text.split('-')[1];
+				var animeCollection = db.collection('airing');
+				animeCollection.find({'title': animetitle}).toArray(function(err, animearray){
+					animeID = animearray[0]['id'];
+					var reply = Bot.Message.link();
+					reply.setUrl("http://anilist.co/anime/"+animeID);
+					reply.setTitle(animearray[0]['title']);
+					reply.addResponseKeyboard(["subscribe-"+animearray[0]['title']], false, message.from);
+					bot.send([reply], message.from);
+					conversationCollection.updateOne({'name':message.from},{$set:{'state':'default', 'timestamp':Date.now()}});
+				});
+			}
 		}
 	})
 });
