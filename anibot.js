@@ -153,7 +153,7 @@ var updateairinganimejob = new CronJob('00 00 00 ** ** 00', function(){
 				airinganimecollection.find({'title': anime['title_romaji']}).toArray(function(err, animearray){
 					var foundanime = animearray[0];
 					var subscribedUsers = foundanime['subscribes']
-					for(int i = 0; i < subscribedUsers.length; i++){
+					for(var i = 0; i < subscribedUsers.length; i++){
 						bot.send([newepisodemsg], subscribedUsers[i]);
 					}
 				});
