@@ -134,7 +134,7 @@ let bot = new Bot(botsettings);
 
 bot.updateBotConfiguration();
 
-var updateairinganimejob = new CronJob('00 00 00 ** ** 00', function(){
+var updateairinganimejob = new CronJob('00 00 00 * * 00', function(){
 	browseAiring(0, function(animes){
 	  animes.forEach(function(anime){
 	    var insert_anime = {'title':anime['title_romaji'],
