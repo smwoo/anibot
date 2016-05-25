@@ -146,6 +146,7 @@ var updateairinganimejob = new CronJob('00 00 00 ** ** 00', function(){
 	        console.log('error updating anime');
 	      }
 	    })
+	    console.log(anime['airing']['time']);
 	    var newepisodejob = new CronJob(new Date(anime['airing']['time']), function(){
 	    	var airinganimecollection = db.collection('airing');
 				var newepisodemsg = bot.Message.text();
