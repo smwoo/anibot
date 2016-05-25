@@ -146,7 +146,7 @@ var updateairinganimejob = new CronJob('00 00 00 ** ** 00', function(){
 	        console.log('error updating anime');
 	      }
 	    })
-	    var newepisodejob = new CronJob(new Date() + parseInt(anime['airing']['countdown'], function(){
+	    var newepisodejob = new CronJob(new Date() + parseInt(anime['airing']['countdown']), function(){
 	    	var airinganimecollection = db.collection('airing');
 				var newepisodemsg = bot.Message.text();
 				newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title_romaji']+' is out. Check your legal streaming sites to watch it now!');
