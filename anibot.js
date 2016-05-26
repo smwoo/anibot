@@ -165,7 +165,7 @@ bot.updateBotConfiguration();
 
 var testingcronjob = new CronJob(new Date(Date.now() + 100000), function(){
 	console.log('cronjob works');
-});
+}, function(){}, true);
 
 bot.onTextMessage((message) => {
 	var conversationCollection = db.collection('conversations');
