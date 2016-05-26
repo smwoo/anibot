@@ -145,27 +145,33 @@ bot.updateBotConfiguration();
 // 	      if(err){
 // 	        console.log('error updating anime');
 // 	      }
-// 	    })
-// 	    console.log(anime['airing']['time']);
-// 	    var newepisodejob = new CronJob(new Date(anime['airing']['countdown']), function(){
-// 	    	var airinganimecollection = db.collection('airing');
-// 				var newepisodemsg = bot.Message.text();
-// 				newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title_romaji']+' is out. Check your legal streaming sites to watch it now!');
-// 				airinganimecollection.find({'title': anime['title_romaji']}).toArray(function(err, animearray){
-// 					var foundanime = animearray[0];
-// 					var subscribedUsers = foundanime['subscribes']
-// 					for(var i = 0; i < subscribedUsers.length; i++){
-// 						bot.send([newepisodemsg], subscribedUsers[i]);
-// 					}
-// 				});
 // 	    });
 // 	  })
 // 	});
 // });
 
-var testingcronjob = new CronJob(new Date(Date.now() + 100000), function(){
-	console.log('cronjob works');
+var sendepisodemsgjob = new CronJob('0 19 * * * *', function(){
+	var airinganimecollection = db.collection('airing');
+	airinganimecollection.find().toArray(function(err, airinganimes){
+		for(var i = 0; i < airinganimes.length; i++){
+			var anime = airinganimes[i];
+			var newepisodejob = new CronJob(new Date(Date.now()+parseInt(anime['airing']['countdown'])), function(){
+				var newepisodemsg = bot.Message.text();
+				newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title']+' is out. Check your legal streaming sites to watch it now!');
+				var subscribers = anime['subscribers'];
+				if(subscribers.length > 0){
+					for(var j = 0; j < subscribers.length; j++){
+						bot.send([newepisodemsg], subscribers[j]);
+					}
+				}
+			}, function(){}, true);
+		}
+	});
 }, function(){}, true);
+
+// var testingcronjob = new CronJob(new Date(Date.now() + 100000), function(){
+// 	console.log('cronjob works');
+// }, function(){}, true);
 
 bot.onTextMessage((message) => {
 	var conversationCollection = db.collection('conversations');
