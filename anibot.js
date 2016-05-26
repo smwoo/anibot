@@ -134,33 +134,37 @@ let bot = new Bot(botsettings);
 
 bot.updateBotConfiguration();
 
-var updateairinganimejob = new CronJob('00 * * * * *', function(){
-	browseAiring(0, function(animes){
-	  animes.forEach(function(anime){
-	    var insert_anime = {'title':anime['title_romaji'],
-	                        'airing_status':anime['airing_status'],
-	                        'airing':anime['airing']}
-	    var collection = db.collection('airing');
-	    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
-	      if(err){
-	        console.log('error updating anime');
-	      }
-	    })
-	    console.log(anime['airing']['time']);
-	    var newepisodejob = new CronJob(new Date(anime['airing']['time']), function(){
-	    	var airinganimecollection = db.collection('airing');
-				var newepisodemsg = bot.Message.text();
-				newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title_romaji']+' is out. Check your legal streaming sites to watch it now!');
-				airinganimecollection.find({'title': anime['title_romaji']}).toArray(function(err, animearray){
-					var foundanime = animearray[0];
-					var subscribedUsers = foundanime['subscribes']
-					for(var i = 0; i < subscribedUsers.length; i++){
-						bot.send([newepisodemsg], subscribedUsers[i]);
-					}
-				});
-	    });
-	  })
-	});
+// var updateairinganimejob = new CronJob('00 * * * * *', function(){
+// 	browseAiring(0, function(animes){
+// 	  animes.forEach(function(anime){
+// 	    var insert_anime = {'title':anime['title_romaji'],
+// 	                        'airing_status':anime['airing_status'],
+// 	                        'airing':anime['airing']}
+// 	    var collection = db.collection('airing');
+// 	    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
+// 	      if(err){
+// 	        console.log('error updating anime');
+// 	      }
+// 	    })
+// 	    console.log(anime['airing']['time']);
+// 	    var newepisodejob = new CronJob(new Date(anime['airing']['countdown']), function(){
+// 	    	var airinganimecollection = db.collection('airing');
+// 				var newepisodemsg = bot.Message.text();
+// 				newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title_romaji']+' is out. Check your legal streaming sites to watch it now!');
+// 				airinganimecollection.find({'title': anime['title_romaji']}).toArray(function(err, animearray){
+// 					var foundanime = animearray[0];
+// 					var subscribedUsers = foundanime['subscribes']
+// 					for(var i = 0; i < subscribedUsers.length; i++){
+// 						bot.send([newepisodemsg], subscribedUsers[i]);
+// 					}
+// 				});
+// 	    });
+// 	  })
+// 	});
+// });
+
+var testingcronjob = new CronJob(new Date(Date.now() + 100000), function(){
+	console.log('cronjob works');
 });
 
 bot.onTextMessage((message) => {
