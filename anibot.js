@@ -150,9 +150,10 @@ bot.updateBotConfiguration();
 // 	});
 // });
 
-var sendepisodemsgjob = new CronJob('0 19 * * * *', function(){
+var sendepisodemsgjob = new CronJob('0 0/5 * 1/1 * *', function(){
 	var airinganimecollection = db.collection('airing');
 	airinganimecollection.find().toArray(function(err, airinganimes){
+		console.log('starting cron job');
 		for(var i = 0; i < airinganimes.length; i++){
 			var anime = airinganimes[i];
 			var newepisodejob = new CronJob(new Date(Date.now()+parseInt(anime['airing']['countdown'])), function(){
