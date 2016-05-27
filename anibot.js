@@ -149,15 +149,17 @@ var getanitokenpromise = new promisemodule(function(resolve, reject){
 getanitokenpromise.done(function(){
 	browseAiring(0, function(animes){
 	  animes.forEach(function(anime){
-	    var insert_anime = {'title':anime['title_romaji'],
-	                        'airing_status':anime['airing_status'],
-	                        'airing':anime['airing']}
-	    var collection = db.collection('airing');
-	    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
-	      if(err){
-	        console.log('error updating anime');
-	      }
-	    })
+	  	if(anime['airing'] != null && anime['airing_status'] == 'currently airing'){
+		    var insert_anime = {'title':anime['title_romaji'],
+		                        'airing_status':anime['airing_status'],
+		                        'airing':anime['airing']}
+		    var collection = db.collection('airing');
+		    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
+		      if(err){
+		        console.log('error updating anime');
+		      }
+		    })
+			}
 	  })
 	});
 
