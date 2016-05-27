@@ -191,6 +191,7 @@ var sendepisodemsgjob = new CronJob(new Date(Date.now() + 10000), function(){
 			var anime = airinganimes[i];
 			console.log('cronjob for '+anime['title']);
 			var newepisodejob = new CronJob(new Date(Date.now()+parseInt(anime['airing']['countdown'])*1000), function(){
+				console.log('cronjob executing');
 				var newepisodemsg = Bot.Message.text();
 				newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title']+' is out. Check your legal streaming sites to watch it now!');
 				var subscribers = anime['subscribers'];
@@ -299,9 +300,9 @@ bot.onTextMessage((message) => {
 					var reply = Bot.Message.link();
 					reply.setUrl("http://anilist.co/anime/"+animeID);
 					reply.setTitle(animearray[0]['title']);
-					reply.addResponseKeyboard(["subscribe to this", "title"], false, message.from);
+					reply.addResponseKeyboard(["subscribe to this anime", "cancel"], false, message.from);
 					bot.send([reply], message.from);
-					conversationCollection.updateOne({'name':message.from},{$set:{'state':'subscribe-'+animearray[0]['title'], 'timestamp':Date.now()}});
+					conversationCollection.updateOne({'name':message.from},{$set:{'state':'subscribe-'+animearray[0]['id'], 'timestamp':Date.now()}});
 				});
 			}
 		}
