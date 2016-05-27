@@ -368,7 +368,7 @@ bot.onTextMessage((message) => {
 					var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"];
 					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 					bot.send([reply], message.from);
-					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now()}});
+					conversationCollection.updateOne({'name':message.from},{$set:{'state':'default', 'timestamp':Date.now()}});
 				}
 			});
 		}
