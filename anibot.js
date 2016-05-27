@@ -338,7 +338,7 @@ bot.onTextMessage((message) => {
 					console.log('error from anime: '+anime['title']);
 				}
 				if(body){
-					console.log('hahahaha');
+					console.log('hahahaha' + body.toString('hex'));
 				}
 				if(body !== ''){
 					console.log("error "+body);
