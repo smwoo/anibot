@@ -94,7 +94,7 @@ function removeAiring(attempt){
 			request(ani_endpoint+'anime/'+anime['id']+'?access_token='+ani_token, function(error, response, body){
 				if(response.statusCode == 401){
 		      if(attempt == 0){
-		      	return getNewAniToken(function(){browseAiring(attempt++, callback)});
+		      	return getNewAniToken(function(){browseAiring(attempt++)});
 		      }
 		      else{
 		      	return 1;
