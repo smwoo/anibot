@@ -353,14 +353,14 @@ bot.onTextMessage((message) => {
 						bot.send([reply], message.from);
 						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'view'}});
 					}
-					else{
-						var reply = Bot.Message.text();
-						reply.setBody("No results found. What would you like to do?");
-						var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"];
-						reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
-						bot.send([reply], message.from);
-						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now()}});
-					}
+				}
+				else{
+					var reply = Bot.Message.text();
+					reply.setBody("No results found. What would you like to do?");
+					var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"];
+					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+					bot.send([reply], message.from);
+					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now()}});
 				}
 			});
 		}
