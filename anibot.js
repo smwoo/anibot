@@ -36,9 +36,9 @@ var bothooksettings = {webhook: botUrl,
 
 var CronJob = require('cron').CronJob;
 
-function isEmptyObject(obj) {
-  for (var key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+function isEmpty(object) {
+  for(var key in object) {
+    if(object.hasOwnProperty(key)){
       return false;
     }
   }
@@ -337,7 +337,7 @@ bot.onTextMessage((message) => {
 				if(response.statusCode == 400){
 					console.log('error from anime: '+anime['title']);
 				}
-				if(response.statusCode == 200 && body){
+				if(response.statusCode == 200 && body != null){
 					console.log("error "+body);
 					var searchresults = JSON.parse(body);
 					if(searchresults.length == 1){
