@@ -168,13 +168,12 @@ let bot = new Bot(botsettings);
 
 bot.updateBotConfiguration();
 
-var sendepisodemsgjob = new CronJob(new Date(Date.now() + 10000), function(){
+var sendepisodemsgjob = new CronJob(0 0 0 * * 1, function(){
 	console.log('starting cron job');
 	var airinganimecollection = db.collection('airing');
 	airinganimecollection.find().toArray(function(err, airinganimes){
 		for(var i = 0; i < airinganimes.length; i++){
 			var anime = airinganimes[i];
-			console.log('cronjob for '+anime['title']);
 			var newepisodejob = new CronJob(new Date(Date.now()+parseInt(anime['airing']['countdown'])*1000), function(){
 				console.log('cronjob executing');
 				var newepisodemsg = Bot.Message.text();
