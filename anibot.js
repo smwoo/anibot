@@ -94,6 +94,31 @@ function browseAiring(attempt, callback){
   })
 }
 
+function removeAiring(attempt, callback){
+	var animecollection = db.collection('airing');
+	animecollection.find().toArray(function(err, animes){
+		animes.forEach(function(anime){
+			request(ani_endpoint+'anime/'+anime['id']+'?access_token='+ani_token, function(error, response, body){
+				if(response.statusCode == 401){
+		      if(attempt == 0){
+		      	return getNewAniToken(function(){browseAiring(attempt++, callback)});
+		      }
+		      else{
+		      	return 1;
+		      }
+		    }
+
+		    if(response.statusCode == 200){
+		    	var retrievedanime = JSON.parse(body);
+		    	if(retrievedanime['airing_status'] == 'finished airing' || retrievedanime['airing'] == null){
+		    		animeCollection.remove({'id':anime['id']});
+		    	}
+		    }
+			});
+		});
+	});
+}
+
 // // set bot's webhook to the heroku app
 request.post({
   url: 'https://api.kik.com/v1/config',
@@ -128,6 +153,8 @@ browseAiring(0, function(animes){
     })
   })
 });
+
+removeAiring(0);
 
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
