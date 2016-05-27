@@ -142,7 +142,7 @@ mongoClient.connect(murl, function(err, returndb){
 
 // update our database with current anime's
 
-getanitokenpromise = new promisemodule(function(resolve, reject){
+var getanitokenpromise = new promisemodule(function(resolve, reject){
 	getNewAniToken(function(){});
 	resolve()
 });
