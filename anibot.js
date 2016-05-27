@@ -183,7 +183,7 @@ bot.updateBotConfiguration();
 // 	});
 // });
 
-var sendepisodemsgjob = new CronJob(new Date(Date.now + 20000), function(){
+var sendepisodemsgjob = new CronJob(new Date(Date.now + 200), function(){
 	console.log('starting cron job');
 	// var airinganimecollection = db.collection('airing');
 	// airinganimecollection.find().toArray(function(err, airinganimes){
