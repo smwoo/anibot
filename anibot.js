@@ -330,7 +330,6 @@ bot.onTextMessage((message) => {
 				}
 				if(response.statusCode == 200){
 					var searchresults = JSON.parse(body);
-					console.log(searchresults.length);
 					if(searchresults.length == 1){
 						var anime = searchresults[0];
 						var reply = Bot.Message.link();
@@ -341,11 +340,12 @@ bot.onTextMessage((message) => {
 					}
 					else{
 						for(var i = 0; i < searchresults.length; i++){
-							if(i < 10){
+							if(i < 20){
 								var keyboardsuggestions = [];
 								keyboardsuggestions.push(searchresults[i]['title_romaji']);
 							}
 						}
+						console.log(keyboardsuggestions);
 						var reply = Bot.Message.text();
 						reply.setBody("choose an anime from the results");
 						reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
