@@ -91,21 +91,12 @@ function removeAiring(attempt){
 	var animecollection = db.collection('airing');
 	animecollection.find().toArray(function(err, animes){
 		animes.forEach(function(anime){
-			console.log(anime['title']);
 			request(ani_endpoint+'anime/'+anime['id']+'?access_token='+ani_token, function(error, response, body){
-				// if(response.statusCode == 401){
-		  //     if(attempt == 0){
-		  //     	return getNewAniToken(function(){removeAiring(attempt++)});
-		  //     }
-		  //     else{
-		  //     	return 1;
-		  //     }
-		  //   }
-
 		    if(response.statusCode == 200){
 		    	var retrievedanime = JSON.parse(body);
 		    	if(retrievedanime['airing_status'] == 'finished airing' || retrievedanime['airing'] == null){
 		    		animecollection.remove({'id':anime['id']});
+						console.log(anime['title']);
 		    	}
 		    }
 			});
@@ -189,13 +180,14 @@ bot.updateBotConfiguration();
 // 	});
 // });
 
-var sendepisodemsgjob = new CronJob('0 0/5 * 1/1 * *', function(){
+var sendepisodemsgjob = new CronJob('0 0/1 * 1/1 * *', function(){
 	var airinganimecollection = db.collection('airing');
 	airinganimecollection.find().toArray(function(err, airinganimes){
 		console.log('starting cron job');
 		for(var i = 0; i < airinganimes.length; i++){
 			var anime = airinganimes[i];
-			var newepisodejob = new CronJob(new Date(Date.now()+parseInt(anime['airing']['countdown'])), function(){
+			var newepisodejob = new CronJob(new Date(Date.now()+parseInt(anime['airing']['countdown'])*1000), function(){
+				console.log('cronjob for '+anime['title']);
 				var newepisodemsg = bot.Message.text();
 				newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title']+' is out. Check your legal streaming sites to watch it now!');
 				var subscribers = anime['subscribers'];
@@ -262,11 +254,12 @@ bot.onTextMessage((message) => {
 				});
 			}
 			else if(text == 'search anime'){
+				// to be implemented
 			}
 			else{
 				var reply = Bot.Message.text();
 				reply.setBody("Sorry i didn't get that, please tell me your request");
-				var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
+				var keyboardsuggestions = ["view and subscribe to the airing season"];//, "search anime"];
 				reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 				bot.send([reply], message.from);
 				conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now()}});
