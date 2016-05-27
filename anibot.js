@@ -116,12 +116,12 @@ request.post({
   function (error, response, body) {
     //Check for error
     if(error){
-        return console.log('Error:', error);
+        return console.log('kik bot Error:', error);
     }
 
     //Check for right status code
     if(response.statusCode !== 200){
-        return console.log('Invalid Status Code Returned:', response.statusCode);
+        return console.log('kik bot Invalid Status Code Returned:', response.statusCode);
     }
   }
 );
