@@ -329,6 +329,7 @@ bot.onTextMessage((message) => {
 					console.log('error from anime: '+anime['title']);
 				}
 				if(response.statusCode == 200){
+					console.log(body);
 					var searchresults = JSON.parse(body);
 					if(searchresults.length == 1){
 						var anime = searchresults[0];
@@ -338,7 +339,7 @@ bot.onTextMessage((message) => {
 						bot.send([reply], message.from);
 						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 					}
-					else if(searchresults.length > 1){
+					else{
 						var keyboardsuggestions = [];
 						for(var i = 0; i < searchresults.length; i++){
 							if(i < 20){
