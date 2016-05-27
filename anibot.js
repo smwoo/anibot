@@ -338,7 +338,7 @@ bot.onTextMessage((message) => {
 						bot.send([reply], message.from);
 						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 					}
-					else if(searchresults > 1){
+					else if(searchresults.length > 1){
 						var keyboardsuggestions = [];
 						for(var i = 0; i < searchresults.length; i++){
 							if(i < 20){
