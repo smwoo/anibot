@@ -252,7 +252,7 @@ bot.onTextMessage((message) => {
 			else{
 				var reply = Bot.Message.text();
 				reply.setBody("Sorry i didn't get that, please tell me your request");
-				var keyboardsuggestions = ["view and subscribe to the airing season"];//, "search anime"];
+				var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"];
 				reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 				bot.send([reply], message.from);
 				conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now()}});
@@ -330,6 +330,7 @@ bot.onTextMessage((message) => {
 				}
 				if(response.statusCode == 200){
 					var searchresults = JSON.parse(body);
+					console.log(searchresults);
 					if(searchresults.length == 1){
 						var anime = searchresults[0];
 						var reply = Bot.Message.link();
