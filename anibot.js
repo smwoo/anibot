@@ -337,7 +337,10 @@ bot.onTextMessage((message) => {
 				if(response.statusCode == 400){
 					console.log('error from anime: '+anime['title']);
 				}
-				if(response.statusCode == 200 && body !== ''){
+				if(body == ''){
+					console.log('hahahaha');
+				}
+				if(body !== ''){
 					console.log("error "+body);
 					var searchresults = JSON.parse(body);
 					if(searchresults.length == 1){
