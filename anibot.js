@@ -146,7 +146,8 @@ getanitokenpromise.done(function(){
 	  	if(anime['airing'] != null && anime['airing_status'] == 'currently airing'){
 		    var insert_anime = {'title':anime['title_romaji'],
 		                        'airing_status':anime['airing_status'],
-		                        'airing':anime['airing']}
+		                        'airing':anime['airing'],
+		                      	'subscribers':[]}
 		    var collection = db.collection('airing');
 		    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
 		      if(err){
@@ -166,22 +167,6 @@ getanitokenpromise.done(function(){
 let bot = new Bot(botsettings);
 
 bot.updateBotConfiguration();
-
-// var updateairinganimejob = new CronJob('00 * * * * *', function(){
-// 	browseAiring(0, function(animes){
-// 	  animes.forEach(function(anime){
-// 	    var insert_anime = {'title':anime['title_romaji'],
-// 	                        'airing_status':anime['airing_status'],
-// 	                        'airing':anime['airing']}
-// 	    var collection = db.collection('airing');
-// 	    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
-// 	      if(err){
-// 	        console.log('error updating anime');
-// 	      }
-// 	    });
-// 	  })
-// 	});
-// });
 
 var sendepisodemsgjob = new CronJob(new Date(Date.now() + 10000), function(){
 	console.log('starting cron job');
@@ -309,9 +294,9 @@ bot.onTextMessage((message) => {
 		else if(state == 'subscribe'){
 			if(text == "subscribe to this anime"){
 				// insert code for subscription
-				var animetitle = secondary;
+				var animeID = secondary;
 				var animeCollection = db.collection('airing');
-				animeCollection.find({'title': animetitle}).toArray(function(err, animearray){
+				animeCollection.find({'id': animeID}).toArray(function(err, animearray){
 					if(animearray.length == 0){
 						console.log('error finding anime in db');
 					}
