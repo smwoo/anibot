@@ -92,6 +92,9 @@ function removeAiring(attempt){
 	animecollection.find().toArray(function(err, animes){
 		animes.forEach(function(anime){
 			request(ani_endpoint+'anime/'+anime['id']+'?access_token='+ani_token, function(error, response, body){
+				if(response.statusCode == 400){
+					console.log('error from anime: '+anime['title']);
+				}
 		    if(response.statusCode == 200){
 		    	var retrievedanime = JSON.parse(body);
 		    	if(retrievedanime['airing_status'] == 'finished airing' || retrievedanime['airing'] == null){
