@@ -79,8 +79,7 @@ function browseAiring(attempt, callback){
     }
 
     if(response.statusCode == 200){
-    	var names = [];
-  		var janimes = JSON.parse(body)
+  		var janimes = JSON.parse(body);
     	callback(janimes);
     }
   })
@@ -218,7 +217,7 @@ bot.onTextMessage((message) => {
 		var stateparts = user['state'].split('-');
 		var state = stateparts[0];
 		var secondary = parseInt(stateparts[1]);
-		if(state == 'airing' || state == 'search'){
+		if(state == 'airing'){
 			secondary++;
 		}
 		var prevtime = user['timestamp'];
@@ -245,7 +244,10 @@ bot.onTextMessage((message) => {
 				});
 			}
 			else if(text == 'search anime'){
-				// to be implemented
+				var reply = Bot.Message.text();
+				reply.setBody("enter your search term");
+				bot.send([reply], message.from);
+				conversationCollection.updateOne({'name':message.from},{$set:{'state':'search', 'timestamp':Date.now()}});
 			}
 			else{
 				var reply = Bot.Message.text();
@@ -322,7 +324,51 @@ bot.onTextMessage((message) => {
 			}
 		}
 		else if(state == 'search'){
-			// insert code for searching anime
+			request(ani_endpoint+'anime/search/'+text+'?access_token='+ani_token, function(error, response, body){
+				if(response.statusCode == 400){
+					console.log('error from anime: '+anime['title']);
+				}
+				if(response.statusCode == 200){
+					var searchresults = JSON.parse(body);
+					if(searchresults.length == 1){
+						var anime = searchresults[0];
+						var reply = Bot.Message.link();
+						reply.setUrl("http://anilist.co/anime/"+anime['id']);
+						reply.setTitle(anime['title_romaji']);
+						bot.send([reply], message.from);
+						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
+					}
+					else{
+						for(var i = 0; i < searchresults.length; i++){
+							if(i < 10){
+								var keyboardsuggestions = [];
+								keyboardsuggestions.push(searchresults[i]['title_romaji']);
+							}
+						}
+						var reply = Bot.Message.text();
+						reply.setBody("choose an anime from the results");
+						reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+						bot.send([reply], message.from);
+						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'view'}});
+					}
+				}
+			});
+		}
+		else if (state == 'view'){
+			request(ani_endpoint+'anime/search/'+text+'?access_token='+ani_token, function(error, response, body){
+				if(response.statusCode == 400){
+					console.log('error from anime: '+anime['title']);
+				}
+				if(response.statusCode == 200){
+					var searchresults = JSON.parse(body);
+					var anime = searchresults[0];
+					var reply = Bot.Message.link();
+					reply.setUrl("http://anilist.co/anime/"+anime['id']);
+					reply.setTitle(anime['title_romaji']);
+					bot.send([reply], message.from);
+					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
+				}
+			});
 		}
 	})
 });
