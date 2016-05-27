@@ -183,26 +183,26 @@ bot.updateBotConfiguration();
 // 	});
 // });
 
-var sendepisodemsgjob = new CronJob('0 0/1 * 1/1 * *', function(){
-	var airinganimecollection = db.collection('airing');
-	airinganimecollection.find().toArray(function(err, airinganimes){
-		console.log('starting cron job');
-		for(var i = 0; i < airinganimes.length; i++){
-			var anime = airinganimes[i];
-			var newepisodejob = new CronJob(new Date(Date.now()+parseInt(anime['airing']['countdown'])*1000), function(){
-				console.log('cronjob for '+anime['title']);
-				var newepisodemsg = bot.Message.text();
-				newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title']+' is out. Check your legal streaming sites to watch it now!');
-				var subscribers = anime['subscribers'];
-				if(subscribers.length > 0){
-					for(var j = 0; j < subscribers.length; j++){
-						bot.send([newepisodemsg], subscribers[j]);
-					}
-				}
-			}, function(){}, true);
-		}
-	});
-}, function(){}, true);
+// var sendepisodemsgjob = new CronJob('0 0/1 * 1/1 * *', function(){
+// 	var airinganimecollection = db.collection('airing');
+// 	airinganimecollection.find().toArray(function(err, airinganimes){
+// 		console.log('starting cron job');
+// 		for(var i = 0; i < airinganimes.length; i++){
+// 			var anime = airinganimes[i];
+// 			var newepisodejob = new CronJob(new Date(Date.now()+parseInt(anime['airing']['countdown'])*1000), function(){
+// 				console.log('cronjob for '+anime['title']);
+// 				var newepisodemsg = bot.Message.text();
+// 				newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title']+' is out. Check your legal streaming sites to watch it now!');
+// 				var subscribers = anime['subscribers'];
+// 				if(subscribers.length > 0){
+// 					for(var j = 0; j < subscribers.length; j++){
+// 						bot.send([newepisodemsg], subscribers[j]);
+// 					}
+// 				}
+// 			}, function(){}, true);
+// 		}
+// 	});
+// }, function(){}, true);
 
 // var testingcronjob = new CronJob(new Date(Date.now() + 100000), function(){
 // 	console.log('cronjob works');
