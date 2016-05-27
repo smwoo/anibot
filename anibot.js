@@ -142,6 +142,8 @@ mongoClient.connect(murl, function(err, returndb){
 
 // update our database with current anime's
 
+getNewAniToken(function(){});
+
 browseAiring(0, function(animes){
   animes.forEach(function(anime){
     var insert_anime = {'title':anime['title_romaji'],
