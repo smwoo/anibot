@@ -94,8 +94,8 @@ function browseAiring(attempt, callback){
   })
 }
 
-function removeAiring(attempt, callback){
-	var animecollection = db.collection('airing');
+function removeAiring(attempt, animedb, callback){
+	var animecollection = animedb.collection('airing');
 	animecollection.find().toArray(function(err, animes){
 		animes.forEach(function(anime){
 			request(ani_endpoint+'anime/'+anime['id']+'?access_token='+ani_token, function(error, response, body){
@@ -154,7 +154,7 @@ browseAiring(0, function(animes){
   })
 });
 
-removeAiring(0);
+removeAiring(0, db);
 
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
