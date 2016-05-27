@@ -91,6 +91,7 @@ function removeAiring(attempt){
 	var animecollection = db.collection('airing');
 	animecollection.find().toArray(function(err, animes){
 		animes.forEach(function(anime){
+			console.log(anime['title']);
 			request(ani_endpoint+'anime/'+anime['id']+'?access_token='+ani_token, function(error, response, body){
 				if(response.statusCode == 401){
 		      if(attempt == 0){
