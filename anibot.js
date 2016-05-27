@@ -204,7 +204,7 @@ var sendepisodemsgjob = new CronJob(new Date(Date.now + 20000), function(){
 	});
 }, function(){}, true);
 
-var testingcronjob = new CronJob(new Date(Date.now() + 100000), function(){
+var testingcronjob = new CronJob(new Date(Date.now() + 10000), function(){
 	console.log('cronjob works');
 }, function(){}, true);
 
