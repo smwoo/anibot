@@ -151,7 +151,7 @@ var getanitokenpromise = new promisemodule(function(resolve, reject){
 getanitokenpromise.done(function(){
 	browseAiring(0, function(animes){
 	  animes.forEach(function(anime){
-	  	if(anime['airing'] != null && anime['airing_status'] == 'currently airing'){
+	  	if(anime['airing'] !== null && anime['airing_status'] == 'currently airing'){
 		    var insert_anime = {'title':anime['title_romaji'],
 		                        'airing_status':anime['airing_status'],
 		                        'airing':anime['airing'],
@@ -337,7 +337,7 @@ bot.onTextMessage((message) => {
 				if(response.statusCode == 400){
 					console.log('error from anime: '+anime['title']);
 				}
-				if(response.statusCode == 200 && String(body) != ''){
+				if(response.statusCode == 200 && body !== ''){
 					console.log("error "+body);
 					var searchresults = JSON.parse(body);
 					if(searchresults.length == 1){
