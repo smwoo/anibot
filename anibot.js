@@ -105,7 +105,7 @@ function removeAiring(attempt){
 		    if(response.statusCode == 200){
 		    	var retrievedanime = JSON.parse(body);
 		    	if(retrievedanime['airing_status'] == 'finished airing' || retrievedanime['airing'] == null){
-		    		animeCollection.remove({'id':anime['id']});
+		    		animecollection.remove({'id':anime['id']});
 		    	}
 		    }
 			});
