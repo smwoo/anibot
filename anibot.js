@@ -337,7 +337,7 @@ bot.onTextMessage((message) => {
 				if(response.statusCode == 400){
 					console.log('error from anime: '+anime['title']);
 				}
-				if(response.statusCode == 200 && isEmptyObject(response)){
+				if(response.statusCode == 200 && isEmptyObject(body)){
 					var searchresults = JSON.parse(body);
 					if(searchresults.length == 1){
 						var anime = searchresults[0];
