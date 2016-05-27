@@ -183,10 +183,10 @@ bot.updateBotConfiguration();
 // 	});
 // });
 
-var sendepisodemsgjob = new CronJob('0 0/1 * 1/1 * *', function(){
+var sendepisodemsgjob = new CronJob(new Date(Date.now + 20000), function(){
+	console.log('starting cron job');
 	var airinganimecollection = db.collection('airing');
 	airinganimecollection.find().toArray(function(err, airinganimes){
-		console.log('starting cron job');
 		for(var i = 0; i < airinganimes.length; i++){
 			var anime = airinganimes[i];
 			var newepisodejob = new CronJob(new Date(Date.now()+parseInt(anime['airing']['countdown'])*1000), function(){
@@ -203,10 +203,6 @@ var sendepisodemsgjob = new CronJob('0 0/1 * 1/1 * *', function(){
 		}
 	});
 }, function(){}, true);
-
-var testmsg = bot.Message.text();
-testmsg.setBody('testing');
-bot.send([testmsg], 'm.woo');
 
 // var testingcronjob = new CronJob(new Date(Date.now() + 100000), function(){
 // 	console.log('cronjob works');
