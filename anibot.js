@@ -168,7 +168,7 @@ let bot = new Bot(botsettings);
 
 bot.updateBotConfiguration();
 
-var sendepisodemsgjob = new CronJob(0 0 0 * * 1, function(){
+var sendepisodemsgjob = new CronJob('0 0 0 * * 1', function(){
 	console.log('starting cron job');
 	var airinganimecollection = db.collection('airing');
 	airinganimecollection.find().toArray(function(err, airinganimes){
