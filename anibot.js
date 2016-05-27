@@ -8,14 +8,6 @@ var mongo_pass = process.env.MONGOPASS;
 var murl = 'mongodb://'+mongo_user+':'+mongo_pass+'@ds011912.mlab.com:11912/anibotdb';
 var mongoClient = mongo.MongoClient;
 var db;
-mongoClient.connect(murl, function(err, returndb){
-  if (err) {
-    console.log('unable to connect to mongodb server, Error: ', err);
-  } else {
-    console.log('established connection to ', murl);
-    db = returndb;
-  }
-});
 
 let util = require('util');
 let http = require('http');
@@ -94,42 +86,9 @@ function browseAiring(attempt, callback){
   })
 }
 
-// // set bot's webhook to the heroku app
-request.post({
-  url: 'https://api.kik.com/v1/config',
-  auth: {user : botname, pass : botkey},
-  json: bothooksettings
-  },
-  function (error, response, body) {
-    //Check for error
-    if(error){
-        return console.log('Error:', error);
-    }
+function removeAiring(attempt){
 
-    //Check for right status code
-    if(response.statusCode !== 200){
-        return console.log('Invalid Status Code Returned:', response.statusCode);
-    }
-  }
-);
-
-// update our database with current anime's
-
-browseAiring(0, function(animes){
-  animes.forEach(function(anime){
-    var insert_anime = {'title':anime['title_romaji'],
-                        'airing_status':anime['airing_status'],
-                        'airing':anime['airing']}
-    var collection = db.collection('airing');
-    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
-      if(err){
-        console.log('error updating anime');
-      }
-    })
-  })
-});
-
-function removeAiring(attempt, animecollection){
+	var animecollection = db.collection('airing');
 	animecollection.find().toArray(function(err, animes){
 		animes.forEach(function(anime){
 			request(ani_endpoint+'anime/'+anime['id']+'?access_token='+ani_token, function(error, response, body){
@@ -153,8 +112,50 @@ function removeAiring(attempt, animecollection){
 	});
 }
 
+// // set bot's webhook to the heroku app
+request.post({
+  url: 'https://api.kik.com/v1/config',
+  auth: {user : botname, pass : botkey},
+  json: bothooksettings
+  },
+  function (error, response, body) {
+    //Check for error
+    if(error){
+        return console.log('Error:', error);
+    }
 
-removeAiring(0, db.collection('airing'));
+    //Check for right status code
+    if(response.statusCode !== 200){
+        return console.log('Invalid Status Code Returned:', response.statusCode);
+    }
+  }
+);
+
+mongoClient.connect(murl, function(err, returndb){
+  if (err) {
+    console.log('unable to connect to mongodb server, Error: ', err);
+  } else {
+    console.log('established connection to ', murl);
+    db = returndb;
+  }
+
+// update our database with current anime's
+
+browseAiring(0, function(animes){
+  animes.forEach(function(anime){
+    var insert_anime = {'title':anime['title_romaji'],
+                        'airing_status':anime['airing_status'],
+                        'airing':anime['airing']}
+    var collection = db.collection('airing');
+    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
+      if(err){
+        console.log('error updating anime');
+      }
+    })
+  })
+});
+
+removeAiring(0);
 
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
@@ -336,3 +337,11 @@ bot.onTextMessage((message) => {
 let server = http
     .createServer(bot.incoming())
     .listen(process.env.PORT || 8080);
+
+
+
+
+
+
+
+});
