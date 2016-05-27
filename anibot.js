@@ -330,7 +330,7 @@ bot.onTextMessage((message) => {
 				}
 				if(response.statusCode == 200){
 					var searchresults = JSON.parse(body);
-					console.log(searchresults);
+					console.log(searchresults.length);
 					if(searchresults.length == 1){
 						var anime = searchresults[0];
 						var reply = Bot.Message.link();
