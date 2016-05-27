@@ -337,7 +337,7 @@ bot.onTextMessage((message) => {
 				if(response.statusCode == 400){
 					console.log('error from anime: '+anime['title']);
 				}
-				if(body){
+				if(body.toString == ''){
 					console.log('hahahaha' + body.toString('hex'));
 				}
 				if(body !== ''){
