@@ -16,7 +16,8 @@
     "request" : "2.72.0",
     "cron" : "1.1.0",
     "mongodb" : "2.1.18",
-    "promise" : "7.1.1"
+    "promise" : "7.1.1",
+    "object-sizeof" : "1.0.10"
   },
   "keywords": [
     "anime"

@@ -2,6 +2,8 @@
 
 var promisemodule = require('promise')
 
+var sizeof =require('object-sizeof');
+
 var mongo = require('mongodb');
 var mongo_user = process.env.MONGOUSER;
 var mongo_pass = process.env.MONGOPASS;
@@ -337,11 +339,8 @@ bot.onTextMessage((message) => {
 				if(response.statusCode == 400){
 					console.log('error from anime: '+anime['title']);
 				}
-				if(body.toString == ''){
-					console.log('hahahaha' + body.toString('hex'));
-				}
 				if(body !== ''){
-					console.log("error "+body);
+					console.log("error "+sizeof(body));
 					var searchresults = JSON.parse(body);
 					if(searchresults.length == 1){
 						var anime = searchresults[0];
