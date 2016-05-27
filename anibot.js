@@ -300,7 +300,7 @@ bot.onTextMessage((message) => {
 					if(animearray.length == 0){
 						console.log('error finding anime in db');
 					}
-					animeCollection.updateOne({'title':animetitle},{$addToSet:{'subscribers':message.from}})
+					animeCollection.updateOne({'title':animeID},{$addToSet:{'subscribers':message.from}})
 					var reply = Bot.Message.text();
 					reply.setBody("Succesfully subscribed! What would you like to do next?");
 					var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
