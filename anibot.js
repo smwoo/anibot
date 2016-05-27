@@ -189,8 +189,8 @@ var sendepisodemsgjob = new CronJob(new Date(Date.now() + 10000), function(){
 	airinganimecollection.find().toArray(function(err, airinganimes){
 		for(var i = 0; i < airinganimes.length; i++){
 			var anime = airinganimes[i];
+			console.log('cronjob for '+anime['title']);
 			var newepisodejob = new CronJob(new Date(Date.now()+parseInt(anime['airing']['countdown'])*1000), function(){
-				console.log('cronjob for '+anime['title']);
 				var newepisodemsg = bot.Message.text();
 				newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title']+' is out. Check your legal streaming sites to watch it now!');
 				var subscribers = anime['subscribers'];
