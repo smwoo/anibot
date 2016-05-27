@@ -339,9 +339,9 @@ bot.onTextMessage((message) => {
 						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 					}
 					else{
+						var keyboardsuggestions = [];
 						for(var i = 0; i < searchresults.length; i++){
 							if(i < 20){
-								var keyboardsuggestions = [];
 								keyboardsuggestions.push(searchresults[i]['title_romaji']);
 							}
 						}
