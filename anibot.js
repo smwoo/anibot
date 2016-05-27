@@ -142,23 +142,30 @@ mongoClient.connect(murl, function(err, returndb){
 
 // update our database with current anime's
 
-getNewAniToken(function(){});
-
-browseAiring(0, function(animes){
-  animes.forEach(function(anime){
-    var insert_anime = {'title':anime['title_romaji'],
-                        'airing_status':anime['airing_status'],
-                        'airing':anime['airing']}
-    var collection = db.collection('airing');
-    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
-      if(err){
-        console.log('error updating anime');
-      }
-    })
-  })
+getanitokenpromise = new promisemodule(function(resolve, reject){
+	getNewAniToken(function(){});
+	resolve()
 });
 
-removeAiring(0);
+getanitokenpromise.done(function(){
+	browseAiring(0, function(animes){
+	  animes.forEach(function(anime){
+	    var insert_anime = {'title':anime['title_romaji'],
+	                        'airing_status':anime['airing_status'],
+	                        'airing':anime['airing']}
+	    var collection = db.collection('airing');
+	    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
+	      if(err){
+	        console.log('error updating anime');
+	      }
+	    })
+	  })
+	});
+
+	removeAiring(0);
+});
+
+
 
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
