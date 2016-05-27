@@ -154,7 +154,7 @@ function removeAiring(attempt, animecollection){
 }
 
 
-removeAiring(0, db.collection('airing'););
+removeAiring(0, db.collection('airing'));
 
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
