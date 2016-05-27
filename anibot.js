@@ -287,7 +287,7 @@ bot.onTextMessage((message) => {
 					reply.setTitle(animearray[0]['title']);
 					reply.addResponseKeyboard(["subscribe to this anime", "cancel"], false, message.from);
 					bot.send([reply], message.from);
-					conversationCollection.updateOne({'name':message.from},{$set:{'state':'subscribe-'+animearray[0]['id'], 'timestamp':Date.now()}});
+					conversationCollection.updateOne({'name':message.from},{$set:{'state':'subscribe-'+animeID, 'timestamp':Date.now()}});
 				});
 			}
 		}
@@ -298,7 +298,7 @@ bot.onTextMessage((message) => {
 				var animeCollection = db.collection('airing');
 				animeCollection.find({'id': animeID}).toArray(function(err, animearray){
 					if(animearray.length == 0){
-						console.log('error finding anime in db');
+						console.log('error finding anime in db id number: '+animeID);
 					}
 					animeCollection.updateOne({'title':animeID},{$addToSet:{'subscribers':message.from}})
 					var reply = Bot.Message.text();
