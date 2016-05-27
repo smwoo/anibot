@@ -93,14 +93,14 @@ function removeAiring(attempt){
 		animes.forEach(function(anime){
 			console.log(anime['title']);
 			request(ani_endpoint+'anime/'+anime['id']+'?access_token='+ani_token, function(error, response, body){
-				if(response.statusCode == 401){
-		      if(attempt == 0){
-		      	return getNewAniToken(function(){removeAiring(attempt++)});
-		      }
-		      else{
-		      	return 1;
-		      }
-		    }
+				// if(response.statusCode == 401){
+		  //     if(attempt == 0){
+		  //     	return getNewAniToken(function(){removeAiring(attempt++)});
+		  //     }
+		  //     else{
+		  //     	return 1;
+		  //     }
+		  //   }
 
 		    if(response.statusCode == 200){
 		    	var retrievedanime = JSON.parse(body);
