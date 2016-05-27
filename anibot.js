@@ -218,8 +218,9 @@ bot.onTextMessage((message) => {
 		var text = message.body;
 		var stateparts = user['state'].split('-');
 		var state = stateparts[0];
+		var secondary = parseInt(stateparts[1]);
 		if(state == 'airing' || state == 'search'){
-			var secondary = parseInt(stateparts[1]) + 1;
+			secondary++;
 		}
 		var prevtime = user['timestamp'];
 		if((Date.now() - prevtime)/1000 > 60){
