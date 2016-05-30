@@ -1,11 +1,11 @@
 # anibot
-## A kik chat bot to subscribe to alerts on new episodes of anime and view existing anime
+#### A kik chat bot to subscribe to alerts on new episodes of anime and view existing anime
 
 This bot uses the anilist.co api to get information on the currently airing animes of the season and also to allow users to search the site for information on different shows.
 
 Users can view the current season and choose to subscribe to a series in order to be notified of when a new episode airs.
 
-#Future plans
+####Future plans
 
 Currently rough implementation has been completed, further work in error catching and user flow needs to be improved
 
