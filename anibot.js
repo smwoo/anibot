@@ -136,6 +136,7 @@ request.post({
   }
 );
 
+// wrape everything in connect callback so there is no null db
 mongoClient.connect(murl, function(err, returndb){
   if (err) {
     console.log('unable to connect to mongodb server, Error: ', err);
@@ -199,26 +200,22 @@ var sendepisodemsgjob = new CronJob('0 0 0 * * 1', function(){
 	});
 }, function(){}, true);
 
-// var testingcronjob = new CronJob(new Date(Date.now() + 10000), function(){
-// 	console.log('cronjob works');
-// }, function(){}, true);
-
 bot.onTextMessage((message) => {
 	var conversationCollection = db.collection('conversations');
 	var userarray;
 	console.log('entering promise')
 	var findconversationpromise = new promisemodule(function(resolve, reject){
-		conversationCollection.find({'name': message.from}).toArray(function(err, userarray){
+		conversationCollection.findOne({'name': message.from}, function(err, user){
 			console.log('user: ');
-			console.log(userarray[0]);
-			if(userarray.length == 0){
-				conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
-				conversationCollection.find({'name': message.from}).toArray(function(err, userarray){
-					resolve(userarray[0]);
-				});
+			console.log(user);
+			if(user){
+				resolve(user);
 			}
 			else{
-				resolve(userarray[0]);
+				conversationCollection.insertOne({'name' : message.from, 'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()});
+				conversationCollection.findOne({'name': message.from}, function(err, user){
+					resolve(user);
+				});
 			}
 		});
 	})
@@ -292,17 +289,19 @@ bot.onTextMessage((message) => {
 			}
 			else{
 				var animeCollection = db.collection('airing');
-				animeCollection.find({'title': text}).toArray(function(err, animearray){
-					if(animearray.length == 0){
+				animeCollection.findOne({'title': text}, function(err, anime){
+					if(anime){
+						var animeID = anime['id'];
+						var reply = Bot.Message.link();
+						reply.setUrl("http://anilist.co/anime/"+animeID);
+						reply.setTitle(anime['title']);
+						reply.addResponseKeyboard(["subscribe to this anime", "cancel"], false, message.from);
+						bot.send([reply], message.from);
+						conversationCollection.updateOne({'name':message.from},{$set:{'state':'subscribe-'+animeID, 'timestamp':Date.now()}});
+					}
+					else{
 						console.log('error finding anime in db');
 					}
-					var animeID = animearray[0]['id'];
-					var reply = Bot.Message.link();
-					reply.setUrl("http://anilist.co/anime/"+animeID);
-					reply.setTitle(animearray[0]['title']);
-					reply.addResponseKeyboard(["subscribe to this anime", "cancel"], false, message.from);
-					bot.send([reply], message.from);
-					conversationCollection.updateOne({'name':message.from},{$set:{'state':'subscribe-'+animeID, 'timestamp':Date.now()}});
 				});
 			}
 		}
@@ -311,18 +310,20 @@ bot.onTextMessage((message) => {
 				// insert code for subscription
 				var animeID = secondary;
 				var animeCollection = db.collection('airing');
-				animeCollection.find({'id': animeID}).toArray(function(err, animearray){
-					if(animearray.length == 0){
+				animeCollection.findOne({'id': animeID}, function(err, anime){
+					if(anime){
+						var reply = Bot.Message.text();
+						reply.setBody("Succesfully subscribed! What would you like to do next?");
+						var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
+						reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+						bot.send([reply], message.from);
+						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
+					}
+					else{
 						console.log('error finding anime in db id number: '+animeID);
 					}
 					animeCollection.updateOne({'id':animeID},{$addToSet:{'subscribers':message.from}});
 
-					var reply = Bot.Message.text();
-					reply.setBody("Succesfully subscribed! What would you like to do next?");
-					var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
-					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
-					bot.send([reply], message.from);
-					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 				});
 			}
 			else{
@@ -407,4 +408,4 @@ let server = http
 
 
 
-});
+}); // mongo connect callback close bracket
