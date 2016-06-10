@@ -196,6 +196,13 @@ function removeAiring(){
 	});
 }
 
+function returntomainmenu(bot, message){
+	var reply = Bot.Message.text();
+	reply.setBody("Here are the main menu selections");
+	var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"];
+	reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+	bot.send([reply], message.from);
+}
 // // set bot's webhook to the heroku app
 request.post({
   url: 'https://api.kik.com/v1/config',
@@ -334,10 +341,23 @@ var sendepisodemsgjob = new CronJob('0 0 0 * * 1', function(){
 }, function(){}, true);
 */
 
+bot.onStartChattingMessage((message) => {
+  bot.getUserProfile(message.from)
+    .then((user) => {
+			var conversationCollection = db.collection('conversations');
+			conversationCollection.updateOne({'name' : message.from}, {$set: {'chatId':message.chatId, 'state' : 'default', 'timestamp' : Date.now()}}, {upsert:true}, function(err, result){
+				reply = Bot.Message.text();
+				reply.setBody('Hey '+user.firstName+' I\'m anibot, an anime chat bot used to search for anime or to subscribe and receive messages when a new episode of an anime comes out. To begin please choose one of the options below.');
+				var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"];
+				reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+				bot.send([reply], message.from);
+			});
+    });
+});
+
 bot.onTextMessage((message) => {
 	var conversationCollection = db.collection('conversations');
 	var userarray;
-	console.log('entering promise')
 	var findconversationpromise = new promisemodule(function(resolve, reject){
 		conversationCollection.findOne({'name': message.from}, function(err, user){
 			console.log('user: ');
@@ -354,19 +374,19 @@ bot.onTextMessage((message) => {
 		});
 	})
 	findconversationpromise.done(function foundconversation(user){
-		// insert existing user code here
 		var text = message.body;
 		var stateparts = user['state'].split('-');
 		var state = stateparts[0];
 		var secondary = parseInt(stateparts[1]);
-		if(state == 'airing'){
-			secondary++;
-		}
 		var prevtime = user['timestamp'];
+
+		// timeout to default screen. not that useful so commented out for now. still keeping timestamps for potential future use
+		/*
 		if((Date.now() - prevtime)/1000 > 60){
 			state = 'default'
 			conversationCollection.updateOne({'name':message.from},{$set:{'state':'default'}});
 		}
+		*/
 
 		if(state == 'default'){
 			if(text == 'view and subscribe to the airing season'){
@@ -393,7 +413,7 @@ bot.onTextMessage((message) => {
 			}
 			else{
 				var reply = Bot.Message.text();
-				reply.setBody("Sorry i didn't get that, please tell me your request");
+				reply.setBody("Sorry i didn't get that, please use the prompts to tell me your request");
 				var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"];
 				reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
 				bot.send([reply], message.from);
@@ -406,8 +426,8 @@ bot.onTextMessage((message) => {
 				animeCollection.find().sort({'title': 1}).toArray(function(err, animearray){
 					var reply = Bot.Message.text();
 					reply.setBody("Please select an anime from this season");
-					var keyboardsuggestions = [];
-					var page = secondary;
+					var keyboardsuggestions = ["prev page"];
+					var page = secondary++;
 					for (var i = 10*page; i < 10*page + 10; i++) {
 						if(i<animearray.length){
 							keyboardsuggestions.push(animearray[i]['title']);
@@ -421,6 +441,30 @@ bot.onTextMessage((message) => {
 					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-'+page, 'timestamp':Date.now()}});
 				});
 			}
+			else if(text == 'prev page'){
+				var animeCollection = db.collection('airing');
+				animeCollection.find().sort({'title': 1}).toArray(function(err, animearray){
+					var reply = Bot.Message.text();
+					reply.setBody("Please select an anime from this season");
+					var keyboardsuggestions = ["prev page"];
+					var page = secondary--;
+					for (var i = 10*page; i < 10*page + 10; i++) {
+						if(i<animearray.length){
+							keyboardsuggestions.push(animearray[i]['title']);
+						}
+					}
+					if(page*10+10 < animearray.length){
+						keyboardsuggestions.push.apply(keyboardsuggestions, ["next page", "main menu"]);
+					}
+					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+					bot.send([reply], message.from);
+					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-'+page, 'timestamp':Date.now()}});
+				});
+			}
+			else if(text == "main menu"){
+				returntomainmenu(bot, message);
+				conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
+			}
 			else{
 				var animeCollection = db.collection('airing');
 				animeCollection.findOne({'title': text}, function(err, anime){
@@ -429,12 +473,16 @@ bot.onTextMessage((message) => {
 						var reply = Bot.Message.link();
 						reply.setUrl("http://anilist.co/anime/"+animeID);
 						reply.setTitle(anime['title']);
-						reply.addResponseKeyboard(["subscribe to this anime", "cancel"], false, message.from);
+						reply.addResponseKeyboard(["subscribe to this anime", "main menu"], false, message.from);
 						bot.send([reply], message.from);
 						conversationCollection.updateOne({'name':message.from},{$set:{'state':'subscribe-'+animeID, 'timestamp':Date.now()}});
 					}
 					else{
-						console.log('error finding anime in db');
+						var errormsg = Bot.Message.text();
+						errormsg.setBody("Sorry but the anime "+text+" doesn't appear to be airing. Did you make sure to use the prompts?");
+						bot.send([errormsg], message.from);
+						returntomainmenu(bot, message);
+						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 					}
 				});
 			}
@@ -460,20 +508,20 @@ bot.onTextMessage((message) => {
 
 				});
 			}
+			else if(text == "main menu"){
+				returntomainmenu(bot, message);
+				conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
+			}
 			else{
-				var reply = Bot.Message.text();
-				reply.setBody("Ok then what would you like to do?");
-				var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"]
-				reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
-				bot.send([reply], message.from);
+				var errormsg = Bot.Message.text();
+				errormsg.setBody("Sorry but please use the keyboard prompts. Returning to main menu");
+				bot.send([errormsg], message.from);
+				returntomainmenu(bot, message);
 				conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 			}
 		}
 		else if(state == 'search'){
 			request(ani_endpoint+'anime/search/'+text+'?access_token='+ani_token, function(error, response, body){
-				if(response.statusCode == 400){
-					console.log('error from anime: '+anime['title']);
-				}
 				if(response.statusCode == 200 && sizeof(body) !== 2){
 					console.log("error "+sizeof(body));
 					var searchresults = JSON.parse(body);
@@ -502,19 +550,15 @@ bot.onTextMessage((message) => {
 				}
 				else{
 					var reply = Bot.Message.text();
-					reply.setBody("No results found. What would you like to do?");
-					var keyboardsuggestions = ["view and subscribe to the airing season", "search anime"];
-					reply.addResponseKeyboard(keyboardsuggestions, false, message.from);
+					reply.setBody("No results found. Returning to main menu.");
 					bot.send([reply], message.from);
-					conversationCollection.updateOne({'name':message.from},{$set:{'state':'default', 'timestamp':Date.now()}});
+					returntomainmenu(bot, message);
+					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 				}
 			});
 		}
 		else if (state == 'view'){
 			request(ani_endpoint+'anime/search/'+text+'?access_token='+ani_token, function(error, response, body){
-				if(response.statusCode == 400){
-					console.log('error from anime: '+anime['title']);
-				}
 				if(response.statusCode == 200){
 					var searchresults = JSON.parse(body);
 					var anime = searchresults[0];
@@ -522,6 +566,13 @@ bot.onTextMessage((message) => {
 					reply.setUrl("http://anilist.co/anime/"+anime['id']);
 					reply.setTitle(anime['title_romaji']);
 					bot.send([reply], message.from);
+					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
+				}
+				else{
+					var reply = Bot.Message.text();
+					reply.setBody("Error accessing anime. Returning to main menu.");
+					bot.send([reply], message.from);
+					returntomainmenu(bot, message);
 					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 				}
 			});
