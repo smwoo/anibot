@@ -269,7 +269,7 @@ try {
 		updateAiring();
 		removeAiring();
 
-	}, start: true, timeZone: 'America/Toronto');
+	}, true, 'America/Toronto');
 } catch(ex) {
     console.log("updating anime cron job failed");
 }
@@ -297,7 +297,7 @@ try{
 				bot.send([newepisodemsg], subscriber);
 			});
 		});
-	}, start: true, timeZone: 'America/Toronto');
+	}, true, 'America/Toronto');
 } catch(ex) {
 	console.log("sending episode reminder cron job failed");
 }
@@ -305,7 +305,7 @@ try{
 try{
 	var getNewAniTokenJob = new CronJob('0 0/59 * 1/1 * * *', function(){
 		getNewAniToken();
-	}, start:true);
+	}, true);
 } catch(ex){
 	console.log("refreshing ani token cron job failure");
 }
