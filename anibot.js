@@ -78,7 +78,7 @@ function getNewAniToken(callback){
 }
 
 function updateAiring(){
-	var month = Date.getMonth();
+	var month = Date.prototype.getMonth();
 	var season = 'winter';
   var prevseason = "winter"; // check previous seasons for 2-cour animes. To my knowledge split cours are seperete seasons
   var nextseason = 'invalid';
