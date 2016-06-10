@@ -550,6 +550,7 @@ bot.onTextMessage((message) => {
 							if(i < 20){
 								keyboardsuggestions.push(searchresults[i]['title_romaji']);
 							}
+							keyboardsuggestions.push('main menu');
 						}
 						console.log(keyboardsuggestions);
 						var reply = Bot.Message.text();
@@ -569,25 +570,31 @@ bot.onTextMessage((message) => {
 			});
 		}
 		else if (state == 'view'){
-			request(ani_endpoint+'anime/search/'+text+'?access_token='+ani_token, function(error, response, body){
-				if(response.statusCode == 200){
-					var searchresults = JSON.parse(body);
-					var anime = searchresults[0];
-					var reply = Bot.Message.link();
-					reply.setUrl("http://anilist.co/anime/"+anime['id']);
-					reply.setTitle(anime['title_romaji']);
-					bot.send([reply], message.from);
-					returntomainmenu(bot, message);
-					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
-				}
-				else{
-					var reply = Bot.Message.text();
-					reply.setBody("Error accessing anime. Returning to main menu.");
-					bot.send([reply], message.from);
-					returntomainmenu(bot, message);
-					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
-				}
-			});
+			if(text == 'main menu'){
+				returntomainmenu(bot, message);
+				conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
+			}
+			else{
+				request(ani_endpoint+'anime/search/'+text+'?access_token='+ani_token, function(error, response, body){
+					if(response.statusCode == 200){
+						var searchresults = JSON.parse(body);
+						var anime = searchresults[0];
+						var reply = Bot.Message.link();
+						reply.setUrl("http://anilist.co/anime/"+anime['id']);
+						reply.setTitle(anime['title_romaji']);
+						bot.send([reply], message.from);
+						returntomainmenu(bot, message);
+						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
+					}
+					else{
+						var reply = Bot.Message.text();
+						reply.setBody("Error accessing anime. Returning to main menu.");
+						bot.send([reply], message.from);
+						returntomainmenu(bot, message);
+						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
+					}
+				});
+			}
 		}
 	})
 });
