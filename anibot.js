@@ -77,27 +77,106 @@ function getNewAniToken(callback){
   )
 }
 
-function browseAiring(attempt, callback){
-  request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season=spring&airing_data=true&full_page=true&access_token='+ani_token,
-  function(error, response, body){
-    if(response.statusCode == 401){
-      if(attempt == 0){
-      	return getNewAniToken(function(){browseAiring(attempt++, callback)});
-      }
-      else{
-      	return 1;
-      }
-    }
+function updateAiring(){
+	var month = Date.getMonth();
+	var season = 'winter';
+  var prevseason = "winter"; // check previous seasons for 2-cour animes. To my knowledge split cours are seperete seasons
+  var nextseason = 'invalid';
+	if(month >= 0 && month <3){
+		season = 'winter';
+		prevseason = "fall";
+	}
+	else if(month >= 3 && month <6){
+		season = 'spring';
+		prevseason = "winter";
+	}
+	else if(month >= 6 && month <9){
+		season = 'summer';
+		prevseason = "spring";
+	}
+	else if(month >= 9 && month <12){
+		season = 'fall';
+		prevseason = "summer";
+	}
 
-    if(response.statusCode == 200){
-  		var janimes = JSON.parse(body);
-    	callback(janimes);
+	// check end of season months for overlaping seasons
+	if(month == 2){
+		nextseason = "spring";
+	}
+	else if(month == 5){
+		nextseason = "summer";
+	}
+	else if(month == 8){
+		nextseason = "fall";
+	}
+	else if(month == 11){
+		nextseason = "winter";
+	}
+
+	var animearray = [];
+
+  request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season='+season+'&airing_data=true&full_page=true&access_token='+ani_token, function(error, response, body){
+    if(response.statusCode == 401){
+    	console.log("error getting animes");
     }
-  })
+    else if(response.statusCode == 200){
+  		var animes = JSON.parse(body);
+  		animearray.push.apply(animearray, animes);
+    }
+  });
+
+  request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season='+prevseason+'&airing_data=true&full_page=true&access_token='+ani_token, function(error, response, body){
+    if(response.statusCode == 401){
+    	console.log("error getting animes");
+    }
+    else if(response.statusCode == 200){
+  		var animes = JSON.parse(body);
+  		animearray.push.apply(animearray, animes);
+    }
+  });
+
+  if(nextseason != 'invalid'){
+	  request(ani_endpoint+'browse/anime/?type=Tv&status=currently airing&season='+nextseason+'&airing_data=true&full_page=true&access_token='+ani_token, function(error, response, body){
+	    if(response.statusCode == 401){
+	    	console.log("error getting animes");
+	    }
+	    else if(response.statusCode == 200){
+	  		var animes = JSON.parse(body);
+	  		animearray.push.apply(animearray, animes);
+	    }
+	  });
+	}
+
+  var airinganimecollection = db.collection('airing');
+	animearray.forEach(function(anime){
+  	if(anime['airing'] !== null && anime['airing_status'] == 'currently airing'){
+  		var dbanime = airinganimecollection.findOne({'id':anime['id']});
+  		var subscribers;
+  		if(dbanime){
+  			subscribers = dbanime['subscribers'];
+	  		if (typeof subscribers == 'undefined'){
+	  			subscribers = [];
+	  		}
+	  	}
+	  	else{
+  			subscribers = [];
+	  	}
+	    var insert_anime = {'title':anime['title_romaji'],
+	                        'airing_status':anime['airing_status'],
+	                        'airing':anime['airing'],
+	                        'subscribers': subscribers;
+	                        'last_update': Date.now()/1000};
+	    var collection = db.collection('airing');
+	    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
+	      if(err){
+	        console.log('error updating anime');
+	      }
+	    })
+		}
+  });
 }
 
-function removeAiring(attempt){
-
+function removeAiring(){
 	var animecollection = db.collection('airing');
 	animecollection.find().toArray(function(err, animes){
 		animes.forEach(function(anime){
@@ -152,33 +231,87 @@ var getanitokenpromise = new promisemodule(function(resolve, reject){
 });
 
 getanitokenpromise.done(function(){
-	browseAiring(0, function(animes){
-	  animes.forEach(function(anime){
-	  	if(anime['airing'] !== null && anime['airing_status'] == 'currently airing'){
-		    var insert_anime = {'title':anime['title_romaji'],
-		                        'airing_status':anime['airing_status'],
-		                        'airing':anime['airing'],
-		                      	'subscribers':[]}
-		    var collection = db.collection('airing');
-		    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
-		      if(err){
-		        console.log('error updating anime');
-		      }
-		    })
-			}
-	  })
-	});
-
-	removeAiring(0);
+	updateAiring();
+	removeAiring();
 });
 
 
 
 // Configure the bot API endpoint, details for your bot
 let bot = new Bot(botsettings);
-
 bot.updateBotConfiguration();
 
+// get the latest anime updates
+try {
+	var updateAiringAnimesJob = new CronJob('0 0 1/1 * * *', function(){
+		console.log("updating anime");
+		var airinganimecollection = db.collection.find('airing');
+		airinganimecollection.find().forEach(function(err, anime){
+			var animetitle = anime['title'];
+			request(ani_endpoint+'anime/search/'+animetitle+'?access_token='+ani_token, function(error, response, body){
+				if(response.statusCode == 400){
+					console.log('error from anime: '+anime['title']);
+				}
+				if(response.statusCode == 200){
+					var searchresults = JSON.parse(body);
+					var janime = searchresults[0];
+					if(janime['airing_status'] == "finished airing"){
+						airinganimecollection.remove({'title':janime['title']});
+					}
+					else if{janime['airing_status'] == "currently airing"}{
+						var insert_anime = {'airing_status':janime['airing_status'], 'airing':janime['airing']};
+						airinganimecollection.update({'title':janime['title_romaji']}, {$set:insert_anime});
+					}
+				}
+			});
+		});
+
+		updateAiring();
+		removeAiring();
+
+	}, start: true, timeZone: 'America/Toronto');
+} catch(ex) {
+    console.log("updating anime cron job failed");
+}
+
+try{
+	var sendmsgtosubscribersjob = new CronJob('0 0 9 1/1 * * *', function(){
+		var airinganimecollection = db.collection.find('airing');
+		var todaysAnime = [];
+
+		airinganimecollection.find().forEach(function(err, anime){
+			var countdown = parseInt(anime['airing']['countdown']);
+			var last_update = parseInt(anime['last_update']);
+			var current = Date.now()/1000;
+			var secondsinaDay = 86399;
+			if(countdown - current + last_update > secondsinaDay){
+				todaysAnime.push(anime);
+			}
+		});
+
+		todaysAnime.forEach(function(err, anime){
+			var subscribers = anime['subscribers'];
+			var newepisodemsg = Bot.Message.text();
+			newepisodemsg.setBody('Episode '+anime['airing']['next_episode']+' of '+anime['title']+' airs today.');
+			subscribers.forEach(function(err, subscriber){
+				bot.send([newepisodemsg], subscriber);
+			});
+		});
+	}, start: true, timeZone: 'America/Toronto');
+} catch(ex) {
+	console.log("sending episode reminder cron job failed");
+}
+
+try{
+	var getNewAniTokenJob = new CronJob('0 0/59 * 1/1 * * *', function(){
+		getNewAniToken();
+	}, start:true);
+} catch(ex){
+	console.log("refreshing ani token cron job failure");
+}
+
+/*
+// to do change subscribed episode message system
 var sendepisodemsgjob = new CronJob('0 0 0 * * 1', function(){
 	console.log('starting cron job');
 	var airinganimecollection = db.collection('airing');
@@ -199,6 +332,7 @@ var sendepisodemsgjob = new CronJob('0 0 0 * * 1', function(){
 		}
 	});
 }, function(){}, true);
+*/
 
 bot.onTextMessage((message) => {
 	var conversationCollection = db.collection('conversations');
@@ -395,7 +529,7 @@ bot.onTextMessage((message) => {
 	})
 });
 
-// browseAiring(bot, 0);
+// updateAiring(bot, 0);
 
 // Set up your server and start listening
 let server = http
