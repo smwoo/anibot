@@ -164,7 +164,7 @@ function updateAiring(){
 	    var insert_anime = {'title':anime['title_romaji'],
 	                        'airing_status':anime['airing_status'],
 	                        'airing':anime['airing'],
-	                        'subscribers': subscribers;
+	                        'subscribers': subscribers,
 	                        'last_update': Date.now()/1000};
 	    var collection = db.collection('airing');
 	    collection.update({'id': anime['id']}, {$set: insert_anime}, {upsert:true}, function(err, result){
