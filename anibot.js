@@ -426,8 +426,11 @@ bot.onTextMessage((message) => {
 				animeCollection.find().sort({'title': 1}).toArray(function(err, animearray){
 					var reply = Bot.Message.text();
 					reply.setBody("Please select an anime from this season");
-					var keyboardsuggestions = ["prev page"];
+					var keyboardsuggestions = [];
 					var page = secondary++;
+					if(page > 1){
+						keyboardsuggestions.push('prev page');
+					}
 					for (var i = 10*page; i < 10*page + 10; i++) {
 						if(i<animearray.length){
 							keyboardsuggestions.push(animearray[i]['title']);
@@ -447,7 +450,10 @@ bot.onTextMessage((message) => {
 				animeCollection.find().sort({'title': 1}).toArray(function(err, animearray){
 					var reply = Bot.Message.text();
 					reply.setBody("Please select an anime from this season");
-					var keyboardsuggestions = ["prev page"];
+					var keyboardsuggestions = [];
+					if(page > 1){
+						keyboardsuggestions.push('prev page');
+					}
 					var page = secondary--;
 					for (var i = 10*page; i < 10*page + 10; i++) {
 						if(i<animearray.length){
