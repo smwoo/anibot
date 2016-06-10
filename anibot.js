@@ -441,6 +441,7 @@ bot.onTextMessage((message) => {
 					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-'+page, 'timestamp':Date.now()}});
 				});
 			}
+
 			else if(text == 'prev page'){
 				var animeCollection = db.collection('airing');
 				animeCollection.find().sort({'title': 1}).toArray(function(err, animearray){
@@ -461,10 +462,12 @@ bot.onTextMessage((message) => {
 					conversationCollection.updateOne({'name':message.from},{$set:{'state':'airing-'+page, 'timestamp':Date.now()}});
 				});
 			}
+
 			else if(text == "main menu"){
 				returntomainmenu(bot, message);
 				conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 			}
+
 			else{
 				var animeCollection = db.collection('airing');
 				animeCollection.findOne({'title': text}, function(err, anime){
@@ -477,6 +480,7 @@ bot.onTextMessage((message) => {
 						bot.send([reply], message.from);
 						conversationCollection.updateOne({'name':message.from},{$set:{'state':'subscribe-'+animeID, 'timestamp':Date.now()}});
 					}
+
 					else{
 						var errormsg = Bot.Message.text();
 						errormsg.setBody("Sorry but the anime "+text+" doesn't appear to be airing. Did you make sure to use the prompts?");
@@ -531,6 +535,7 @@ bot.onTextMessage((message) => {
 						reply.setUrl("http://anilist.co/anime/"+anime['id']);
 						reply.setTitle(anime['title_romaji']);
 						bot.send([reply], message.from);
+						returntomainmenu(bot, message);
 						conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 					}
 					else{
@@ -566,6 +571,7 @@ bot.onTextMessage((message) => {
 					reply.setUrl("http://anilist.co/anime/"+anime['id']);
 					reply.setTitle(anime['title_romaji']);
 					bot.send([reply], message.from);
+					returntomainmenu(bot, message);
 					conversationCollection.updateOne({'name':message.from},{$set:{'timestamp':Date.now(), 'state':'default'}});
 				}
 				else{
