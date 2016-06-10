@@ -258,7 +258,7 @@ try {
 					if(janime['airing_status'] == "finished airing"){
 						airinganimecollection.remove({'title':janime['title']});
 					}
-					else if{janime['airing_status'] == "currently airing"}{
+					else if(janime['airing_status'] == "currently airing"){
 						var insert_anime = {'airing_status':janime['airing_status'], 'airing':janime['airing']};
 						airinganimecollection.update({'title':janime['title_romaji']}, {$set:insert_anime});
 					}
